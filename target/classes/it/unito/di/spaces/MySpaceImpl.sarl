@@ -1,0 +1,36 @@
+package it.unito.di.spaces
+
+import io.sarl.sre.spaces.AbstractSpace
+import java.util.UUID
+
+class MySpaceImpl extends AbstractSpace implements MySpace {
+	
+	def printMessage(msg : String) {
+		System.out.println("****" + msg + "****")
+	}
+	
+	def forEachStrongParticipant(callback : (UUID)=>void) {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def forEachWeakParticipant(callback : (UUID)=>void) {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def getNumberOfStrongParticipants : int {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def getNumberOfWeakParticipants : int {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def isPseudoEmpty(id : UUID) : boolean {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def throwException(e : MyException) {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+}

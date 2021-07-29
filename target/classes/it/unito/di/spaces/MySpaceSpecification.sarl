@@ -1,0 +1,12 @@
+package it.unito.di.spaces
+
+import io.sarl.lang.core.SpaceSpecification
+import io.sarl.lang.core.SpaceID
+
+class MySpaceSpecification implements SpaceSpecification<MySpace> {
+
+	def create(id : SpaceID, params : Object*) : MySpace {
+		return new MySpaceImpl(id)
+	}
+	
+}
