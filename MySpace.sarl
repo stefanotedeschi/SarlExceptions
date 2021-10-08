@@ -1,0 +1,22 @@
+package it.unito.di.spaces
+
+import io.sarl.lang.core.Space
+import java.util.UUID
+
+interface MySpace extends Space {
+	
+	def printMessage(msg : String)
+	
+	def throwException(e: MyException)
+	
+	def register(f : Exception, u : UUID) : boolean
+}
+
+event MyException{
+	var e : Exception
+	new(e : Exception){
+		this.e = e 
+	}
+
+
+}

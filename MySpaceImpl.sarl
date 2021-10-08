@@ -1,0 +1,69 @@
+package it.unito.di.spaces
+
+import io.sarl.core.ParticipantJoined
+import io.sarl.core.ParticipantLeft
+import io.sarl.lang.core.Address
+import io.sarl.lang.core.EventListener
+import java.util.HashMap
+import java.util.UUID
+import io.sarl.sre.spaces.AbstractSpace
+
+class MySpaceImpl extends AbstractSpace implements MySpace  {
+	
+	var handlers : HashMap<Class<? extends Exception>, UUID>
+	
+	def printMessage(msg : String) {
+		System.out.println("****" + msg + "****")
+	}
+
+	def register(e : Exception, u : UUID) : boolean{
+		if(handlers.containsKey(e.class)) return false
+		handlers.put(e.class, u)
+		System.out.println(handlers) return true;
+		}
+	
+	def throwException(e : MyException) {
+		var ex = e.e
+		if(handlers.containsKey(e.class)){
+			//qui chiamiamo la emit filtrando gli UUID indicizzati nell'hashmap
+		}
+	}	
+	
+	def forEachStrongParticipant(callback : (UUID)=>void) {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def forEachWeakParticipant(callback : (UUID)=>void) {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def getNumberOfStrongParticipants : int {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def getNumberOfWeakParticipants : int {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def isPseudoEmpty(id : UUID) : boolean {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	
+	def registerStrongParticipant(arg0 : EventListener) : Address fires ParticipantJoined {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def registerWeakParticipant(arg0 : EventListener) : Address fires ParticipantJoined {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def unregister(arg0 : EventListener) : Address fires ParticipantLeft {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def getAddress(id : UUID) : Address {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+}

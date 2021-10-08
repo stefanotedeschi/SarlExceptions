@@ -1,0 +1,22 @@
+package it.unito.di.agents
+
+import io.sarl.core.Initialize
+import io.sarl.core.Lifecycle
+import java.util.UUID
+
+agent Boot {
+
+	uses Lifecycle
+
+	on Initialize {
+		
+		var spaceId = UUID::randomUUID
+		
+		spawn(typeof(Alice), spaceId)
+		spawn(typeof(Bob), spaceId)
+		
+		killMe
+	
+	}
+
+}

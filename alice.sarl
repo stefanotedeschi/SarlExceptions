@@ -1,0 +1,25 @@
+package it.unito.di.agents
+
+import java.util.UUID
+
+import it.unito.di.spaces.MySpaceSpecification
+import it.unito.di.spaces.MySpace
+import io.sarl.core.DefaultContextInteractions
+import io.sarl.core.Initialize
+
+agent Alice {
+
+	uses DefaultContextInteractions
+
+	var comspace : MySpace
+	var ex = new NullPointerException
+	on Initialize {
+		
+		comspace = defaultContext.getOrCreateSpaceWithSpec(typeof(MySpaceSpecification),
+			occurrence.parameters.get(0) as UUID)
+		
+		comspace.printMessage("Hello from ALICE")
+		comspace.register(ex, getID)
+	}
+
+}
