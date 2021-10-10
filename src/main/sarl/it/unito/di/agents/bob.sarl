@@ -1,15 +1,15 @@
 package it.unito.di.agents
 
-import java.util.UUID
-
-import it.unito.di.spaces.MySpaceSpecification
-import it.unito.di.spaces.MySpace
+import io.sarl.core.Behaviors
 import io.sarl.core.DefaultContextInteractions
 import io.sarl.core.Initialize
+import it.unito.di.spaces.MySpace
+import it.unito.di.spaces.MySpaceSpecification
+import java.util.UUID
 
 agent Bob {
 
-	uses DefaultContextInteractions
+	uses DefaultContextInteractions,Behaviors
 
 	var comspace : MySpace
 
