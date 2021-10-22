@@ -1,0 +1,33 @@
+package it.unito.di.agents
+
+import io.sarl.core.Behaviors
+import io.sarl.core.DefaultContextInteractions
+import io.sarl.core.Initialize
+import java.util.UUID
+import it.unito.di.spaces.ExceptionSpace
+import it.unito.di.spaces.ExceptionSpaceSpecification
+import it.unito.di.spaces.MyException
+import io.sarl.core.Logging
+
+agent Alice {
+
+	uses DefaultContextInteractions,Behaviors,Logging
+
+	var comspace : ExceptionSpace
+	var ex = new NullPointerException
+	on Initialize {
+		
+		comspace = defaultContext.getOrCreateSpaceWithSpec(typeof(ExceptionSpaceSpecification),
+			occurrence.parameters.get(0) as UUID)
+		comspace.registerStrongParticipant(ex ,asEventListener())
+		comspace.printMessage("Hello from ALICE")
+		
+	}
+	
+	on MyException{
+		info(occurrence)
+	}
+	
+	
+	
+	}
