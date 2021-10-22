@@ -1,0 +1,14 @@
+package it.unito.di.spaces
+
+import io.sarl.lang.core.SpaceID
+import io.sarl.lang.core.SpaceSpecification
+import io.sarl.sre.internal.SpaceParticipantEventEmitter
+import io.sarl.sre.services.logging.QuietLoggingService
+
+class ExceptionSpaceSpecification implements SpaceSpecification<ExceptionSpace> {
+	var log = new QuietLoggingService
+	var sp : SpaceParticipantEventEmitter
+	def create(id : SpaceID, params : Object*) : ExceptionSpace {
+		return new ExceptionSpaceImpl(id,sp,log)
+	}
+}

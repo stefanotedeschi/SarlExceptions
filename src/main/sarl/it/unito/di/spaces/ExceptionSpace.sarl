@@ -1,0 +1,21 @@
+package it.unito.di.spaces
+
+import io.sarl.lang.core.Space
+import io.sarl.lang.core.EventListener
+import java.util.UUID
+
+interface ExceptionSpace extends Space {
+	
+	def printMessage(msg : String)
+	def throwException(who :UUID,e : MyException)
+	def registerStrongParticipant(ex : Exception, el : EventListener) : boolean
+}
+
+event MyException{
+	var e : Exception
+	new(e : Exception){
+		this.e = e 
+	}
+
+
+}
