@@ -1,20 +1,13 @@
 package it.unito.di.spaces
 
-import io.sarl.lang.core.Space
 import io.sarl.lang.core.EventListener
+import io.sarl.core.OpenEventSpace
+import it.unito.di.events.MyException
 
-interface ExceptionSpace extends Space {
+interface ExceptionSpace extends OpenEventSpace {
 	
 	def printMessage(msg : String)
 	def throwException(e : MyException)
 	def registerStrongParticipant(ex : Exception, el : EventListener) : boolean
-}
-
-event MyException{
-	var e : Exception
-	new(e : Exception){
-		this.e = e 
-	}
-
 
 }

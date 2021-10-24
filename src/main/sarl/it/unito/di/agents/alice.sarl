@@ -6,20 +6,30 @@ import io.sarl.core.Initialize
 import java.util.UUID
 import it.unito.di.spaces.ExceptionSpace
 import it.unito.di.spaces.ExceptionSpaceSpecification
+import io.sarl.core.Lifecycle
+import io.sarl.core.ExternalContextAccess
+import io.sarl.core.Logging
+import io.sarl.core.Schedules
+import it.unito.di.events.MyException
 
 agent Alice {
 
-	uses DefaultContextInteractions,Behaviors
+	uses DefaultContextInteractions, Schedules, Behaviors, Logging, ExternalContextAccess, Lifecycle
 
 	var comspace : ExceptionSpace
 	var ex = new NullPointerException
+	
 	on Initialize {
 		
 		comspace = defaultContext.getOrCreateSpaceWithSpec(typeof(ExceptionSpaceSpecification),
 			occurrence.parameters.get(0) as UUID)
 		comspace.registerStrongParticipant(ex ,asEventListener())
 		comspace.printMessage("Hello from ALICE")
+
+		var e = new MyException("this is the cause of the failure")
+		e.e = ex
+		comspace.emit(e)
 		
 	}
 	
-	}
+}

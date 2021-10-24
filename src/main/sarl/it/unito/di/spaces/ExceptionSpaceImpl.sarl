@@ -4,12 +4,12 @@ import io.sarl.core.ParticipantJoined
 import io.sarl.core.ParticipantLeft
 import io.sarl.lang.core.Address
 import io.sarl.lang.core.EventListener
-import io.sarl.sre.spaces.AbstractSpace
 import java.util.HashMap
 import java.util.UUID
-import io.sarl.sre.spaces.AbstractEventSpace
+import io.sarl.sre.spaces.OpenLocalEventSpace
+import it.unito.di.events.MyException
 
-class ExceptionSpaceImpl extends AbstractEventSpace implements ExceptionSpace  {
+class ExceptionSpaceImpl extends OpenLocalEventSpace implements ExceptionSpace  {
 	
 	var handlers = new  HashMap<Class<? extends Exception>, UUID>
 	

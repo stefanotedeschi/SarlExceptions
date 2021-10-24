@@ -3,23 +3,35 @@ package it.unito.di.agents
 import io.sarl.core.Behaviors
 import io.sarl.core.DefaultContextInteractions
 import io.sarl.core.Initialize
-import it.unito.di.spaces.MySpace
-import it.unito.di.spaces.MySpaceSpecification
+import it.unito.di.spaces.ExceptionSpace
+import it.unito.di.spaces.ExceptionSpaceSpecification
 import java.util.UUID
+import io.sarl.core.Lifecycle
+import io.sarl.core.Schedules
+import io.sarl.core.Logging
+import io.sarl.core.ExternalContextAccess
+import it.unito.di.events.MyException
 
 agent Bob {
 
-	uses DefaultContextInteractions,Behaviors
+	uses DefaultContextInteractions, Schedules, Behaviors, Logging, ExternalContextAccess, Lifecycle
 
-	var comspace : MySpace
+	var comspace : ExceptionSpace
 
 	on Initialize {
 
-		comspace = defaultContext.getOrCreateSpaceWithSpec(typeof(MySpaceSpecification),
+		comspace = defaultContext.getOrCreateSpaceWithSpec(typeof(ExceptionSpaceSpecification),
 			occurrence.parameters.get(0) as UUID)
+		comspace.registerStrongParticipant(asEventListener())
 
 		comspace.printMessage("Hello from BOB")
 
+	}
+	
+	on MyException {
+
+		comspace.printMessage("EXCEPTION!")
+		
 	}
 
 }
