@@ -1,7 +1,12 @@
 package it.unito.di.agents;
 
+import io.sarl.core.Behaviors;
 import io.sarl.core.DefaultContextInteractions;
+import io.sarl.core.ExternalContextAccess;
 import io.sarl.core.Initialize;
+import io.sarl.core.Lifecycle;
+import io.sarl.core.Logging;
+import io.sarl.core.Schedules;
 import io.sarl.lang.annotation.ImportedCapacityFeature;
 import io.sarl.lang.annotation.PerceptGuardEvaluator;
 import io.sarl.lang.annotation.SarlElementType;
@@ -11,8 +16,9 @@ import io.sarl.lang.core.Agent;
 import io.sarl.lang.core.AtomicSkillReference;
 import io.sarl.lang.core.DynamicSkillProvider;
 import io.sarl.lang.core.Event;
-import it.unito.di.spaces.MySpace;
-import it.unito.di.spaces.MySpaceSpecification;
+import it.unito.di.events.MyException;
+import it.unito.di.spaces.ExceptionSpace;
+import it.unito.di.spaces.ExceptionSpaceSpecification;
 import java.util.Collection;
 import java.util.Set;
 import java.util.UUID;
@@ -24,14 +30,22 @@ import org.eclipse.xtext.xbase.lib.Pure;
 @SarlElementType(19)
 @SuppressWarnings("all")
 public class Alice extends Agent {
-  private MySpace comspace;
+  private ExceptionSpace comspace;
+  
+  private NullPointerException ex = new NullPointerException();
   
   private void $behaviorUnit$Initialize$0(final Initialize occurrence) {
     DefaultContextInteractions _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER = this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER();
     Object _get = occurrence.parameters[0];
-    this.comspace = _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.getDefaultContext().<MySpace>getOrCreateSpaceWithSpec(MySpaceSpecification.class, 
+    this.comspace = _$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS$CALLER.getDefaultContext().<ExceptionSpace>getOrCreateSpaceWithSpec(ExceptionSpaceSpecification.class, 
       ((UUID) _get));
+    Behaviors _$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS$CALLER = this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS$CALLER();
+    this.comspace.registerStrongParticipant(this.ex, _$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS$CALLER.asEventListener());
     this.comspace.printMessage("Hello from ALICE");
+    MyException e = new MyException("this is the cause of the failure");
+    e.e = this.ex;
+    ExternalContextAccess _$CAPACITY_USE$IO_SARL_CORE_EXTERNALCONTEXTACCESS$CALLER = this.$CAPACITY_USE$IO_SARL_CORE_EXTERNALCONTEXTACCESS$CALLER();
+    _$CAPACITY_USE$IO_SARL_CORE_EXTERNALCONTEXTACCESS$CALLER.emit(this.comspace, e);
   }
   
   @Extension
@@ -46,6 +60,76 @@ public class Alice extends Agent {
       this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS = $getSkill(DefaultContextInteractions.class);
     }
     return $castSkill(DefaultContextInteractions.class, this.$CAPACITY_USE$IO_SARL_CORE_DEFAULTCONTEXTINTERACTIONS);
+  }
+  
+  @Extension
+  @ImportedCapacityFeature(Schedules.class)
+  @SyntheticMember
+  private transient AtomicSkillReference $CAPACITY_USE$IO_SARL_CORE_SCHEDULES;
+  
+  @SyntheticMember
+  @Pure
+  private Schedules $CAPACITY_USE$IO_SARL_CORE_SCHEDULES$CALLER() {
+    if (this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES == null || this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES.get() == null) {
+      this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES = $getSkill(Schedules.class);
+    }
+    return $castSkill(Schedules.class, this.$CAPACITY_USE$IO_SARL_CORE_SCHEDULES);
+  }
+  
+  @Extension
+  @ImportedCapacityFeature(Behaviors.class)
+  @SyntheticMember
+  private transient AtomicSkillReference $CAPACITY_USE$IO_SARL_CORE_BEHAVIORS;
+  
+  @SyntheticMember
+  @Pure
+  private Behaviors $CAPACITY_USE$IO_SARL_CORE_BEHAVIORS$CALLER() {
+    if (this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS == null || this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS.get() == null) {
+      this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS = $getSkill(Behaviors.class);
+    }
+    return $castSkill(Behaviors.class, this.$CAPACITY_USE$IO_SARL_CORE_BEHAVIORS);
+  }
+  
+  @Extension
+  @ImportedCapacityFeature(Logging.class)
+  @SyntheticMember
+  private transient AtomicSkillReference $CAPACITY_USE$IO_SARL_CORE_LOGGING;
+  
+  @SyntheticMember
+  @Pure
+  private Logging $CAPACITY_USE$IO_SARL_CORE_LOGGING$CALLER() {
+    if (this.$CAPACITY_USE$IO_SARL_CORE_LOGGING == null || this.$CAPACITY_USE$IO_SARL_CORE_LOGGING.get() == null) {
+      this.$CAPACITY_USE$IO_SARL_CORE_LOGGING = $getSkill(Logging.class);
+    }
+    return $castSkill(Logging.class, this.$CAPACITY_USE$IO_SARL_CORE_LOGGING);
+  }
+  
+  @Extension
+  @ImportedCapacityFeature(ExternalContextAccess.class)
+  @SyntheticMember
+  private transient AtomicSkillReference $CAPACITY_USE$IO_SARL_CORE_EXTERNALCONTEXTACCESS;
+  
+  @SyntheticMember
+  @Pure
+  private ExternalContextAccess $CAPACITY_USE$IO_SARL_CORE_EXTERNALCONTEXTACCESS$CALLER() {
+    if (this.$CAPACITY_USE$IO_SARL_CORE_EXTERNALCONTEXTACCESS == null || this.$CAPACITY_USE$IO_SARL_CORE_EXTERNALCONTEXTACCESS.get() == null) {
+      this.$CAPACITY_USE$IO_SARL_CORE_EXTERNALCONTEXTACCESS = $getSkill(ExternalContextAccess.class);
+    }
+    return $castSkill(ExternalContextAccess.class, this.$CAPACITY_USE$IO_SARL_CORE_EXTERNALCONTEXTACCESS);
+  }
+  
+  @Extension
+  @ImportedCapacityFeature(Lifecycle.class)
+  @SyntheticMember
+  private transient AtomicSkillReference $CAPACITY_USE$IO_SARL_CORE_LIFECYCLE;
+  
+  @SyntheticMember
+  @Pure
+  private Lifecycle $CAPACITY_USE$IO_SARL_CORE_LIFECYCLE$CALLER() {
+    if (this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE == null || this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE.get() == null) {
+      this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE = $getSkill(Lifecycle.class);
+    }
+    return $castSkill(Lifecycle.class, this.$CAPACITY_USE$IO_SARL_CORE_LIFECYCLE);
   }
   
   @SyntheticMember

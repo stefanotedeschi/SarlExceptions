@@ -12,6 +12,7 @@ agent Boot {
 		
 		var spaceId = UUID::randomUUID
 		
+		
 		spawn(Alice, spaceId)
 		spawn(Bob, spaceId)
 		
