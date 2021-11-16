@@ -20,7 +20,7 @@ agent Alice {
 		comspace = defaultContext.getOrCreateSpaceWithSpec(typeof(ExceptionSpaceSpecification),
 			occurrence.parameters.get(0) as UUID)
 		comspace.printMessage("Hello from ALICE")
-		comspace.registerThrower(MyException, asEventListener())
+		comspace.registerAsThrower(Initialize, MyException, asEventListener)
 			
 		every(1000)[
 			comspace.throwException(new MyException(NullPointerException),getID)

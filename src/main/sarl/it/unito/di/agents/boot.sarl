@@ -15,6 +15,7 @@ agent Boot {
 		
 		spawn(Alice, spaceId)
 		spawn(Bob, spaceId)
+		spawn(Carol, spaceId)
 		
 		killMe
 	

@@ -8,7 +8,7 @@ import it.unito.di.spaces.ExceptionSpace
 import it.unito.di.spaces.ExceptionSpaceSpecification
 import java.util.UUID
 
-agent Bob {
+agent Carol {
 
 	uses DefaultContextInteractions,Behaviors
 
@@ -18,14 +18,14 @@ agent Bob {
 
 		comspace = defaultContext.getOrCreateSpaceWithSpec(typeof(ExceptionSpaceSpecification),
 			occurrence.parameters.get(0) as UUID)
-		comspace.printMessage("Hello from BOB")
-		comspace.registerAsHandler(MyException, asEventListener)
-
+		comspace.printMessage("Hello from CAROL")
+		//comspace.registerAsHandler(MyException, asEventListener)
+	
 	}
 	
 	on MyException {
 
-		comspace.printMessage("EXCEPTION Bob!")
+		comspace.printMessage("EXCEPTION Carol!")
 		
 	}
 

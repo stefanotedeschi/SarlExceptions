@@ -1,0 +1,30 @@
+/** 
+ * 
+ */
+package it.unito.di
+
+import io.sarl.lang.core.Event
+import io.sarl.core.Failure
+import java.util.UUID
+
+/** 
+ * @author Stefano
+ * 
+ */
+class ExceptionSpecification implements Comparable {
+	
+	var ev : Class<? extends Event>
+	var failure : Class<? extends Failure>
+	var ag : UUID
+	
+	new(ev : Class<? extends Event>, failure : Class<? extends Failure>, ag : UUID) {
+		this.ev = ev
+		this.failure = failure
+		this.ag = ag
+	}
+	
+	def compareTo(o : Object) : int {
+		return 1
+	}
+	
+}
