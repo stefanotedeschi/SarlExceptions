@@ -1,0 +1,32 @@
+package it.unito.di.agents
+
+import io.sarl.core.Behaviors
+import io.sarl.core.DefaultContextInteractions
+import io.sarl.core.Initialize
+import it.unito.di.events.MyException
+import it.unito.di.spaces.ExceptionSpace
+import it.unito.di.spaces.ExceptionSpaceSpecification
+import java.util.UUID
+
+agent Bob {
+
+	uses DefaultContextInteractions,Behaviors
+
+	var comspace : ExceptionSpace
+
+	on Initialize {
+
+		comspace = defaultContext.getOrCreateSpaceWithSpec(typeof(ExceptionSpaceSpecification),
+			occurrence.parameters.get(0) as UUID)
+		comspace.printMessage("Hello from BOB")
+		comspace.registerHandler(MyException, asEventListener())
+
+	}
+	
+	on MyException {
+
+		comspace.printMessage("EXCEPTION!")
+		
+	}
+
+}

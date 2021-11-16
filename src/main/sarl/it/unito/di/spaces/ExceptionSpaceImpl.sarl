@@ -1,0 +1,97 @@
+package it.unito.di.spaces
+
+import io.sarl.core.ParticipantJoined
+import io.sarl.core.ParticipantLeft
+import io.sarl.lang.core.Address
+import io.sarl.lang.core.EventListener
+import java.util.HashMap
+import java.util.UUID
+import io.sarl.sre.spaces.OpenLocalEventSpace
+import it.unito.di.events.MyException
+import io.sarl.core.Failure
+
+class ExceptionSpaceImpl extends OpenLocalEventSpace implements ExceptionSpace  {
+	
+	var handlers = new  HashMap<Class<? extends Failure>, UUID>
+	var throwers = new HashMap<Class<? extends Failure>, UUID> 
+	
+	
+	
+	
+	def printMessage(msg : String) {
+		System.out.println("****" + msg + "****")
+	}
+	
+	def throwException(e : MyException, u : UUID) {
+		var ex = e.e
+		synchronized(handlers){
+			synchronized(throwers){	
+				if(handlers.containsKey(e.class)){
+					var handler = handlers.get(e.class)
+					emit(u,e)[it.getID == handler]
+			
+				}
+			}
+		}
+	}
+	
+	
+	def registerHandler(e : Class<? extends Failure>, listener : EventListener) : boolean {
+		synchronized (handlers) {
+			if (!handlers.containsKey(e)) {
+				handlers.put(e, listener.getID)
+				System.out.println(handlers)
+				return true
+			}
+		}
+		return false
+	}
+	
+	def registerThrower(e : Class<? extends Failure>, listener : EventListener) : boolean {
+		synchronized (throwers) {
+			if (!throwers.containsKey(e.class)) {
+				throwers.put(e, listener.getID)
+				return true
+			}
+		}
+		return false
+	}
+	
+		
+	def forEachStrongParticipant(callback : (UUID)=>void) {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def forEachWeakParticipant(callback : (UUID)=>void) {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def getNumberOfStrongParticipants : int {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def getNumberOfWeakParticipants : int {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def isPseudoEmpty(id : UUID) : boolean {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def registerWeakParticipant(arg0 : EventListener) : Address fires ParticipantJoined {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def unregister(arg0 : EventListener) : Address fires ParticipantLeft {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def getAddress(id : UUID) : Address {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def registerStrongParticipant(ex : Exception, el : EventListener) : boolean {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+}
