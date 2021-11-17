@@ -3,10 +3,11 @@ package it.unito.di.agents
 import io.sarl.core.Behaviors
 import io.sarl.core.DefaultContextInteractions
 import io.sarl.core.Initialize
-import it.unito.di.events.MyException
+import it.unito.di.events.MyOtherException
 import it.unito.di.spaces.ExceptionSpace
 import it.unito.di.spaces.ExceptionSpaceSpecification
 import java.util.UUID
+import it.unito.di.events.MyException
 
 agent Carol {
 
@@ -19,14 +20,17 @@ agent Carol {
 		comspace = defaultContext.getOrCreateSpaceWithSpec(typeof(ExceptionSpaceSpecification),
 			occurrence.parameters.get(0) as UUID)
 		comspace.printMessage("Hello from CAROL")
+		comspace.registerAsHandler(MyOtherException, asEventListener)
 		//comspace.registerAsHandler(MyException, asEventListener)
 	
 	}
-	
-	on MyException {
 
+	on MyException {
 		comspace.printMessage("EXCEPTION Carol!")
-		
+	}
+	
+	on MyOtherException {
+		comspace.printMessage("OTHER EXCEPTION Carol!")
 	}
 
 }

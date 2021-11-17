@@ -1,0 +1,9 @@
+package it.unito.di.events
+
+import io.sarl.core.Failure
+
+event MyOtherException extends Failure {
+	
+	var e : Exception
+
+}
