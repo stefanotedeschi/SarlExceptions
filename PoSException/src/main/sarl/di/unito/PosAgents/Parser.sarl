@@ -1,0 +1,41 @@
+/** 
+ * 
+ */
+package di.unito.PosAgents
+
+import io.sarl.core.Initialize
+import io.sarl.core.Behaviors
+import io.sarl.core.DefaultContextInteractions
+import di.unito.ExceptionSpace.ExceptionSpace
+import java.util.UUID
+import di.unito.ExceptionSpace.ExceptionSpaceSpecification
+import di.unito.Exceptions.ParseException
+import di.unito.Events.Withdrawal
+import io.sarl.core.Logging
+
+/** 
+ * @author Giova
+ * 
+ */
+agent Parser {
+	uses DefaultContextInteractions, Behaviors,Logging
+
+	var exSpace : ExceptionSpace
+
+	on Initialize {
+		exSpace = defaultContext.getOrCreateSpaceWithSpec(typeof(ExceptionSpaceSpecification),
+			occurrence.parameters.get(0) as UUID)
+		exSpace.printMessage("UserAgent started")
+		exSpace.registerAsHandler(ParseException, asEventListener)
+	}
+
+	on Withdrawal{
+		if((occurrence.amount)%2 !== 0){
+			exSpace.throwException(new ParseException(new NumberFormatException), getID)
+			info("Exception, cannot withdraw : "+occurrence.amount)
+		}else{
+			info("OK")
+		}
+	}
+
+}

@@ -1,0 +1,42 @@
+/** 
+ * 
+ */
+package di.unito.PosAgents
+
+import io.sarl.core.Initialize
+import io.sarl.core.Schedules
+import io.sarl.core.DefaultContextInteractions
+import io.sarl.core.Behaviors
+import di.unito.ExceptionSpace.ExceptionSpace
+import di.unito.Exceptions.ParseException
+import di.unito.ExceptionSpace.ExceptionSpaceSpecification
+import java.util.UUID
+import java.util.Random
+import di.unito.Events.Withdrawal
+import di.unito.Exceptions.TestException
+
+/** 
+ * @author Giova
+ * 
+ */
+agent UserAgent {
+	
+	uses DefaultContextInteractions, Schedules, Behaviors
+	var exSpace : ExceptionSpace
+	var r = new Random
+
+	
+	on Initialize {
+		exSpace = defaultContext.getOrCreateSpaceWithSpec(typeof(ExceptionSpaceSpecification),
+			occurrence.parameters.get(0) as UUID)
+		exSpace.printMessage("UserAgent started")
+		exSpace.registerAsThrower(Initialize, ParseException, asEventListener)
+		every(5000)[
+			emit(new Withdrawal((r.nextInt(100)/2)))			
+			exSpace.throwException(new TestException(NullPointerException), getID)
+		]
+	}
+	
+	
+	
+}

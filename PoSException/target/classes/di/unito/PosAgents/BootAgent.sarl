@@ -1,0 +1,25 @@
+/** 
+ * 
+ */
+package di.unito.PosAgents
+
+import io.sarl.core.Initialize
+import io.sarl.core.Lifecycle
+import java.util.UUID
+
+/** 
+ * @author Giova
+ * 
+ */
+agent BootAgent {
+	uses Lifecycle
+
+	on Initialize {
+		var spaceId = UUID::randomUUID
+
+		spawn(UserAgent, spaceId)
+		spawn(Parser, spaceId)
+
+		killMe
+	}
+}

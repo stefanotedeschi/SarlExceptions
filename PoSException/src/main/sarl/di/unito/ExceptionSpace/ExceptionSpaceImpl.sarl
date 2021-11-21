@@ -1,0 +1,97 @@
+package di.unito.ExceptionSpace
+
+import io.sarl.core.ParticipantJoined
+import io.sarl.core.ParticipantLeft
+import io.sarl.lang.core.Address
+import io.sarl.lang.core.EventListener
+import java.util.UUID
+import io.sarl.sre.spaces.OpenLocalEventSpace
+import io.sarl.core.Failure
+import java.util.concurrent.ConcurrentSkipListSet
+import io.sarl.lang.core.Event
+import java.util.concurrent.ConcurrentHashMap
+import java.util.concurrent.CopyOnWriteArrayList
+
+
+class ExceptionSpaceImpl extends OpenLocalEventSpace implements ExceptionSpace {
+
+	var throwers = new ConcurrentSkipListSet<ExceptionSpecification>
+	var handlers = new ConcurrentHashMap<Class<? extends Failure>, CopyOnWriteArrayList<UUID>>
+
+	def printMessage(msg : String) {
+		System.out.println("****" + msg + "****")
+	}
+	
+	def registerAsThrower(ev : Class<? extends Event>, e : Class<? extends Failure>, listener : EventListener) : void {
+		System.out.println("****REGISTER AS THROWER****")
+		registerStrongParticipant(listener);
+		var exSpec = new ExceptionSpecification(ev, e, listener.getID)
+		throwers.add(exSpec)
+		// TODO: Aggiungere emit evento per notificare gli altri della registrazione
+	}
+
+	def registerAsHandler(e : Class<? extends Failure>, listener : EventListener) : void {
+		System.out.println("****REGISTER AS HANLDER****")
+		registerStrongParticipant(listener);
+		if (handlers.containsKey(e)) {
+			var h = handlers.get(e)
+			h.add(listener.getID)
+		} else {
+			var h = new CopyOnWriteArrayList<UUID>
+			h.add(listener.getID)
+			handlers.put(e, h)
+		}
+	}
+
+	def throwException(f : Failure, u : UUID) {
+		System.out.println("****THROW****")
+		if (handlers.containsKey(f.class) && handlers.get(f.class) !== null) {
+			var handlers = handlers.get(f.class)
+			for (handler : handlers) {
+				emit(u, f)[it.getID == handler]
+			}
+		}else{
+			System.out.println("ExceptionSpace: none handler 
+								registered for exception " +f.class+" thrown by agent "+ u)
+		}
+	}
+
+	def forEachStrongParticipant(callback : (UUID)=>void) {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def forEachWeakParticipant(callback : (UUID)=>void) {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def getNumberOfStrongParticipants : int {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def getNumberOfWeakParticipants : int {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def isPseudoEmpty(id : UUID) : boolean {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def registerWeakParticipant(arg0 : EventListener) : Address fires ParticipantJoined {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def unregister(arg0 : EventListener) : Address fires ParticipantLeft {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def getAddress(id : UUID) : Address {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+	def registerStrongParticipant(ex : Exception, el : EventListener) : boolean {
+		throw new UnsupportedOperationException("TODO: auto-generated method stub")
+	}
+	
+
+	
+}

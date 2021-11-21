@@ -1,0 +1,19 @@
+package di.unito.ExceptionSpace
+
+import io.sarl.core.OpenEventSpace
+import io.sarl.core.Failure
+import java.util.UUID
+import io.sarl.lang.core.Event
+import io.sarl.lang.core.EventListener
+
+interface ExceptionSpace extends OpenEventSpace {
+
+	def printMessage(msg : String)
+
+	def throwException(f : Failure, u : UUID)
+
+	def registerAsThrower(ev : Class<? extends Event>, ex : Class<? extends Failure>, listener : EventListener)
+
+	def registerAsHandler(ex : Class<? extends Failure>, listener : EventListener)
+
+}
