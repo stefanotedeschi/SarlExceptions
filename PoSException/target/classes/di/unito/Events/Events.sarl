@@ -1,9 +1,0 @@
-package di.unito.Events
-
-
-event Withdrawal{
-	var amount : int
-	new(a : int){
-		this.amount = a
-	}
-}

@@ -1,7 +1,0 @@
-package di.unito.Exceptions
-
-import io.sarl.core.Failure
-
-event TestException extends Failure{
-	var e : Exception
-}

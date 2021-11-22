@@ -1,9 +1,0 @@
-package di.unito.Exceptions
-
-import io.sarl.core.Failure
-
-event ParseException extends Failure {
-
-	var e : Exception
-
-}
