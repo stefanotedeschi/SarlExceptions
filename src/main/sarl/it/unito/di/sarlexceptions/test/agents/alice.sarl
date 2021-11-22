@@ -1,14 +1,14 @@
-package it.unito.di.agents
+package it.unito.di.sarlexceptions.test.agents
 
 import io.sarl.core.Behaviors
 import io.sarl.core.DefaultContextInteractions
 import io.sarl.core.Initialize
 import io.sarl.core.Schedules
-import it.unito.di.events.MyException
-import it.unito.di.spaces.ExceptionSpace
-import it.unito.di.spaces.ExceptionSpaceSpecification
 import java.util.UUID
-import it.unito.di.events.MyOtherException
+import it.unito.di.sarlexceptions.spaces.ExceptionSpace
+import it.unito.di.sarlexceptions.test.MyOtherException
+import it.unito.di.sarlexceptions.test.MyException
+import it.unito.di.sarlexceptions.spaces.ExceptionSpaceSpecification
 
 agent Alice {
 

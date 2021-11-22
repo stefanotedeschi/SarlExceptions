@@ -1,24 +1,22 @@
-package it.unito.di.agents
+package it.unito.di.sarlexceptions.examples.atm
 
 import io.sarl.core.Initialize
 import io.sarl.core.Lifecycle
 import java.util.UUID
 
-agent Boot {
-
+/** 
+ * @author Giova
+ * 
+ */
+agent BootAgent {
 	uses Lifecycle
 
 	on Initialize {
-		
 		var spaceId = UUID::randomUUID
-		
-		
-		spawn(Alice, spaceId)
-		spawn(Bob, spaceId)
-		spawn(Carol, spaceId)
-		
-		killMe
-	
-	}
 
+		spawn(UserAgent, spaceId)
+		spawn(Parser, spaceId)
+
+		killMe
+	}
 }

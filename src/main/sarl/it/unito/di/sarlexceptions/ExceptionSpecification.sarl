@@ -1,7 +1,7 @@
 /** 
  * 
  */
-package it.unito.di
+package it.unito.di.sarlexceptions
 
 import io.sarl.lang.core.Event
 import io.sarl.core.Failure

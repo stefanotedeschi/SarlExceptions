@@ -1,0 +1,7 @@
+package it.unito.di.sarlexceptions.examples.atm
+
+import io.sarl.core.Failure
+
+event TestException extends Failure{
+	var e : Exception
+}

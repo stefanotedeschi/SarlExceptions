@@ -1,0 +1,8 @@
+package it.unito.di.sarlexceptions.examples.atm
+
+event Withdrawal{
+	var amount : int
+	new(a : int){
+		this.amount = a
+	}
+}

@@ -1,4 +1,4 @@
-package it.unito.di.spaces;
+package it.unito.di.sarlexceptions.spaces;
 
 import io.sarl.lang.core.SpaceSpecification
 import io.sarl.lang.core.SpaceID

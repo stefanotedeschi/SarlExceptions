@@ -1,0 +1,37 @@
+
+package it.unito.di.sarlexceptions.examples.atm
+
+import io.sarl.core.Initialize
+import io.sarl.core.Behaviors
+import io.sarl.core.DefaultContextInteractions
+import java.util.UUID
+import io.sarl.core.Logging
+import it.unito.di.sarlexceptions.spaces.ExceptionSpace
+import it.unito.di.sarlexceptions.spaces.ExceptionSpaceSpecification
+
+/** 
+ * @author Giova
+ * 
+ */
+agent Parser {
+	uses DefaultContextInteractions, Behaviors,Logging
+
+	var exSpace : ExceptionSpace
+
+	on Initialize {
+		exSpace = defaultContext.getOrCreateSpaceWithSpec(typeof(ExceptionSpaceSpecification),
+			occurrence.parameters.get(0) as UUID)
+		exSpace.printMessage("UserAgent started")
+		exSpace.registerAsHandler(ParseException, asEventListener)
+	}
+
+	on Withdrawal{
+		if((occurrence.amount)%2 !== 0){
+			exSpace.throwException(new ParseException(new NumberFormatException), getID)
+			info("Exception, cannot withdraw : "+occurrence.amount)
+		}else{
+			info("OK")
+		}
+	}
+
+}
