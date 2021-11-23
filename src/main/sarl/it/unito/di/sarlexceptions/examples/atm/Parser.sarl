@@ -25,7 +25,7 @@ agent Parser {
 		exSpace.registerAsHandler(ParseException, asEventListener)
 	}
 
-	on Withdrawal{
+	on Withdrawal {
 		if((occurrence.amount)%2 !== 0){
 			exSpace.throwException(new ParseException(new NumberFormatException), getID)
 			info("Exception, cannot withdraw : "+occurrence.amount)

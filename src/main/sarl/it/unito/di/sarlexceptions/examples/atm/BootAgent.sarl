@@ -13,6 +13,9 @@ agent BootAgent {
 
 	on Initialize {
 		var spaceId = UUID::randomUUID
+		
+		var gui = new ATMGUI
+		gui.setup
 
 		spawn(UserAgent, spaceId)
 		spawn(Parser, spaceId)
