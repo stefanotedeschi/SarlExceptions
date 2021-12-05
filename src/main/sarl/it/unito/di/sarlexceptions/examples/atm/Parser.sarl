@@ -19,19 +19,71 @@ agent Parser {
 	var exSpace : ExceptionSpace
 
 	on Initialize {
+		
 		exSpace = defaultContext.getOrCreateSpaceWithSpec(typeof(ExceptionSpaceSpecification),
 			occurrence.parameters.get(0) as UUID)
-		exSpace.printMessage("UserAgent started")
-		exSpace.registerAsHandler(ParseException, asEventListener)
+			
+		exSpace.registerAsThrower(ParsingRequest,NotANumberException, asEventListener)
 	}
 
-	on Withdrawal {
-		if((occurrence.amount)%2 !== 0){
-			exSpace.throwException(new ParseException(new NumberFormatException), getID)
-			info("Exception, cannot withdraw : "+occurrence.amount)
-		}else{
-			info("OK")
-		}
+	on ParsingRequest {
+
+		System.out.println("Parsing request received!")
+		
+		var amountString = occurrence.amount
+		if (amountString == null) {
+           exSpace.throwException(new NotANumberException(-1),ID)
+        }
+
+        var result = 0
+        var negative = false
+        var i = 0
+        var len = amountString.length()
+        var limit = -Integer.MAX_VALUE
+        var multmin : int
+        var digit : int
+
+        if(len > 0) {
+            var firstChar = amountString.charAt(0);
+            if (firstChar < '0') { // Possible leading "+" or "-"
+                if (firstChar == '-') {
+                    negative = true
+                    limit = Integer.MIN_VALUE;
+				} else if (firstChar != '+') {
+					exSpace.throwException(new NotANumberException(i), ID)
+					return
+				}
+                if (len == 1) { // Cannot have lone "+" or "-"
+					exSpace.throwException(new NotANumberException(i), ID)
+					return
+				}
+                i++;
+            }
+            multmin = limit / 10;
+            while (i < len) {
+                // Accumulating negatively avoids surprises near MAX_VALUE
+                digit = Character.digit(amountString.charAt(i++), 10);
+                if (digit < 0) {
+					exSpace.throwException(new NotANumberException(i), ID)
+                	return
+                }
+                if (result < multmin) {
+					exSpace.throwException(new NotANumberException(i), ID)
+                	return
+                }
+                result *= 10;
+                if (result < limit + digit) {
+					exSpace.throwException(new NotANumberException(i), ID)
+                	return
+                }
+                result -= digit;
+            }
+        } else {
+			exSpace.throwException(new NotANumberException(-1), ID)
+        	return
+        }
+        var amountInt = negative ? result : -result;
+		emit(new ParsingDone(amountInt))
 	}
 
 }

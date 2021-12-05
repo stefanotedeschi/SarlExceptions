@@ -5,9 +5,10 @@ import io.sarl.core.Schedules
 import io.sarl.core.DefaultContextInteractions
 import io.sarl.core.Behaviors
 import java.util.UUID
-import java.util.Random
 import it.unito.di.sarlexceptions.spaces.ExceptionSpace
 import it.unito.di.sarlexceptions.spaces.ExceptionSpaceSpecification
+import java.util.Scanner
+import it.unito.di.sarlexceptions.test.events.ExceptionThrowerRegistered
 
 /** 
  * @author Giova
@@ -16,21 +17,50 @@ import it.unito.di.sarlexceptions.spaces.ExceptionSpaceSpecification
 agent UserAgent {
 	
 	uses DefaultContextInteractions, Schedules, Behaviors
-	var exSpace : ExceptionSpace
-	var r = new Random
-
 	
+	var exSpace : ExceptionSpace
+	var attempts = 1
+
 	on Initialize {
 		exSpace = defaultContext.getOrCreateSpaceWithSpec(typeof(ExceptionSpaceSpecification),
 			occurrence.parameters.get(0) as UUID)
-		exSpace.printMessage("UserAgent started")
-		exSpace.registerAsThrower(Initialize, ParseException, asEventListener)
-		every(5000)[
-			emit(new Withdrawal((r.nextInt(100)/2)))			
-			exSpace.throwException(new TestException(NullPointerException), getID)
-		]
+		exSpace.registerStrongParticipant(asEventListener)
+		wake(new RequestInput)
+		
 	}
 	
+	on RequestInput {
+
+		var input = new Scanner(System.in);
+		System.out.println("Insert the desired amount: ");
+		var amount = input.next();
+		System.out.println(amount + " inserted!");
+		
+		emit(new ParsingRequest(amount))
+		
+	}
+
+	on ExceptionThrowerRegistered[occurrence.ev === ParsingRequest && occurrence.ex === NotANumberException] {
+		exSpace.registerAsHandler(occurrence.ex,asEventListener)
+	}
 	
+	on NotANumberException {
+		System.out.println("EXCEPTION!")
+		if(attempts < 3) {
+			attempts++
+			wake(new RequestInput)
+		}
+		else {
+			wake(new CloseATM)
+		}
+	}
+	
+	on ParsingDone {
+		System.out.println("Parsing done")
+	}
+	
+	on CloseATM {
+		System.out.println("RETRY LATER")
+	}
 	
 }

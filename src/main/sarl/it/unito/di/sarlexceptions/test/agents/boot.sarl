@@ -3,6 +3,7 @@ package it.unito.di.sarlexceptions.test.agents
 import io.sarl.core.Initialize
 import io.sarl.core.Lifecycle
 import java.util.UUID
+import java.util.Scanner
 
 agent Boot {
 
@@ -12,6 +13,10 @@ agent Boot {
 		
 		var spaceId = UUID::randomUUID
 		
+		var input = new Scanner(System.in);
+		System.out.println("Insert the amount: ");
+		var amount = input.next();
+		System.out.println(amount + " inserted!");
 		
 		spawn(Alice, spaceId)
 		spawn(Bob, spaceId)

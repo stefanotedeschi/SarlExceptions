@@ -2,8 +2,8 @@ package it.unito.di.sarlexceptions.examples.atm
 
 import io.sarl.core.Failure
 
-event ParseException extends Failure {
-
-	var e : Exception
-
+event NotANumberException extends Failure {
+	
+	var index : int
+	
 }

@@ -12,6 +12,7 @@ import io.sarl.lang.core.Event
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 import it.unito.di.sarlexceptions.ExceptionSpecification
+import it.unito.di.sarlexceptions.test.events.ExceptionThrowerRegistered
 
 class ExceptionSpaceImpl extends OpenLocalEventSpace implements ExceptionSpace  {
 	
@@ -28,6 +29,7 @@ class ExceptionSpaceImpl extends OpenLocalEventSpace implements ExceptionSpace  
 		registerStrongParticipant(listener);
 		var exSpec = new ExceptionSpecification(ev,e,listener.getID)
 		throwers.add(exSpec)
+		emit(this.spaceID.ID, new ExceptionThrowerRegistered(ev, e, listener.ID))
 		// TODO: Aggiungere emit evento per notificare gli altri della registrazione 
 	}
 

@@ -1,8 +1,28 @@
 package it.unito.di.sarlexceptions.examples.atm
 
-event Withdrawal{
+event ProvideMoney {
 	var amount : int
 	new(a : int){
 		this.amount = a
 	}
 }
+
+event ParsingRequest {
+	var amount : String
+
+	new(a : String) {
+		this.amount = a
+	}
+}
+
+event ParsingDone {
+	var amount : int
+
+	new(a : int) {
+		this.amount = a
+	}
+}
+
+event RequestInput {}
+
+event CloseATM {}

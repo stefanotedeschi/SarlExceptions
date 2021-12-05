@@ -22,12 +22,14 @@ agent Alice {
 			occurrence.parameters.get(0) as UUID)
 		comspace.printMessage("Hello from ALICE")
 		comspace.registerAsThrower(Initialize, MyException, asEventListener)
+		comspace.registerAsThrower(Initialize, MyOtherException, asEventListener)
 
 		comspace.throwException(new MyOtherException(NullPointerException), getID)
 			
 		every(1000)[
 			comspace.throwException(new MyException(NullPointerException),getID)
 		]
+		
 	}
 	
 }
