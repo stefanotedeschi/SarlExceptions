@@ -7,10 +7,11 @@ import java.util.UUID
 import it.unito.di.sarlexceptions.spaces.ExceptionSpace
 import it.unito.di.sarlexceptions.spaces.ExceptionSpaceSpecification
 import it.unito.di.sarlexceptions.test.MyException
+import io.sarl.core.Logging
 
 agent Bob {
 
-	uses DefaultContextInteractions,Behaviors
+	uses DefaultContextInteractions, Behaviors, Logging
 
 	var comspace : ExceptionSpace
 
@@ -18,14 +19,14 @@ agent Bob {
 
 		comspace = defaultContext.getOrCreateSpaceWithSpec(typeof(ExceptionSpaceSpecification),
 			occurrence.parameters.get(0) as UUID)
-		comspace.printMessage("Hello from BOB")
+		info("Hello from BOB")
 		comspace.registerAsHandler(MyException, asEventListener)
 
 	}
 	
 	on MyException {
 
-		comspace.printMessage("EXCEPTION Bob!")
+		info("MY EXCEPTION Bob!")
 		
 	}
 

@@ -26,3 +26,5 @@ event ParsingDone {
 event RequestInput {}
 
 event CloseATM {}
+
+event WithdrawalCompleted {}

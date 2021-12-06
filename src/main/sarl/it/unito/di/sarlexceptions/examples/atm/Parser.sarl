@@ -23,12 +23,12 @@ agent Parser {
 		exSpace = defaultContext.getOrCreateSpaceWithSpec(typeof(ExceptionSpaceSpecification),
 			occurrence.parameters.get(0) as UUID)
 			
-		exSpace.registerAsThrower(ParsingRequest,NotANumberException, asEventListener)
+		exSpace.registerAsRaiser(ParsingRequest,NotANumberException, asEventListener)
 	}
 
 	on ParsingRequest {
 
-		System.out.println("Parsing request received!")
+		info("Parsing request received!")
 		
 		var amountString = occurrence.amount
 		if (amountString == null) {

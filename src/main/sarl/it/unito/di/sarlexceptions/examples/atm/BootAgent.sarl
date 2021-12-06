@@ -15,7 +15,6 @@ agent BootAgent {
 		
 		var spaceId = UUID::randomUUID
 		
-
 		spawn(UserAgent, spaceId)
 		spawn(Parser, spaceId)
 

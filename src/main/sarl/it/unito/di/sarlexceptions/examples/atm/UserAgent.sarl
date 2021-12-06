@@ -9,6 +9,7 @@ import it.unito.di.sarlexceptions.spaces.ExceptionSpace
 import it.unito.di.sarlexceptions.spaces.ExceptionSpaceSpecification
 import java.util.Scanner
 import it.unito.di.sarlexceptions.test.events.ExceptionThrowerRegistered
+import io.sarl.core.Logging
 
 /** 
  * @author Giova
@@ -16,7 +17,7 @@ import it.unito.di.sarlexceptions.test.events.ExceptionThrowerRegistered
  */
 agent UserAgent {
 	
-	uses DefaultContextInteractions, Schedules, Behaviors
+	uses DefaultContextInteractions, Schedules, Behaviors, Logging
 	
 	var exSpace : ExceptionSpace
 	var attempts = 1
@@ -25,28 +26,30 @@ agent UserAgent {
 		exSpace = defaultContext.getOrCreateSpaceWithSpec(typeof(ExceptionSpaceSpecification),
 			occurrence.parameters.get(0) as UUID)
 		exSpace.registerStrongParticipant(asEventListener)
-		wake(new RequestInput)
-		
+		info("Waiting for a suitable parser...")
 	}
 	
 	on RequestInput {
 
 		var input = new Scanner(System.in);
-		System.out.println("Insert the desired amount: ");
+		info("Insert the desired amount: ");
 		var amount = input.next();
-		System.out.println(amount + " inserted!");
 		
+		info("Requesting parsing...");
 		emit(new ParsingRequest(amount))
 		
 	}
 
 	on ExceptionThrowerRegistered[occurrence.ev === ParsingRequest && occurrence.ex === NotANumberException] {
-		exSpace.registerAsHandler(occurrence.ex,asEventListener)
+		exSpace.registerAsHandler(occurrence.ex, asEventListener)
+		info("Parser found!")
+		wake(new RequestInput)
 	}
 	
 	on NotANumberException {
-		System.out.println("EXCEPTION!")
+		info("The inserted string is not a number in digits!")
 		if(attempts < 3) {
+			info("Performing another attempt...")
 			attempts++
 			wake(new RequestInput)
 		}
@@ -56,11 +59,18 @@ agent UserAgent {
 	}
 	
 	on ParsingDone {
-		System.out.println("Parsing done")
+		var amount = occurrence.amount
+		info("Please withdraw " + amount + "€ within 10 seconds.")
+		Thread::sleep(10000)
+		wake(new WithdrawalCompleted)
 	}
 	
 	on CloseATM {
-		System.out.println("RETRY LATER")
+		info("Please, retry later.")
+	}
+
+	on WithdrawalCompleted {
+		info("Withdrawal completed.")
 	}
 	
 }

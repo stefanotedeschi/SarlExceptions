@@ -16,25 +16,20 @@ import it.unito.di.sarlexceptions.test.events.ExceptionThrowerRegistered
 
 class ExceptionSpaceImpl extends OpenLocalEventSpace implements ExceptionSpace  {
 	
-	var throwers = new ConcurrentSkipListSet<ExceptionSpecification>
+	var raisers = new ConcurrentSkipListSet<ExceptionSpecification>
 	var handlers = new  ConcurrentHashMap<Class<? extends Failure>, CopyOnWriteArrayList<UUID>>
 	
-	
-	def printMessage(msg : String) {
-		System.out.println("****" + msg + "****")
-	}
-	
-	def registerAsThrower(ev : Class<? extends Event>, e : Class<? extends Failure>, listener : EventListener) : void {
-		System.out.println("****REGISTER AS THROWER****")
+	def registerAsRaiser(ev : Class<? extends Event>, e : Class<? extends Failure>, listener : EventListener) : void {
+		logger.info("New exception raiser registered")
 		registerStrongParticipant(listener);
 		var exSpec = new ExceptionSpecification(ev,e,listener.getID)
-		throwers.add(exSpec)
+		raisers.add(exSpec)
 		emit(this.spaceID.ID, new ExceptionThrowerRegistered(ev, e, listener.ID))
 		// TODO: Aggiungere emit evento per notificare gli altri della registrazione 
 	}
 
 	def registerAsHandler(e : Class<? extends Failure>, listener : EventListener) : void {
-		System.out.println("****REGISTER AS HANLDER****")
+		logger.info("New exception handler registered")
 		registerStrongParticipant(listener);
 		if (handlers.containsKey(e)) {
 			var h = handlers.get(e)
@@ -48,7 +43,7 @@ class ExceptionSpaceImpl extends OpenLocalEventSpace implements ExceptionSpace  
 	}
 	
 	def throwException(f : Failure, u : UUID) {
-		System.out.println("****THROW****")
+		logger.info("New exception thrown")
 		if(handlers.containsKey(f.class)){
 			var handlers = handlers.get(f.class)
 			for(handler : handlers) {

@@ -9,10 +9,11 @@ import it.unito.di.sarlexceptions.spaces.ExceptionSpace
 import it.unito.di.sarlexceptions.test.MyOtherException
 import it.unito.di.sarlexceptions.test.MyException
 import it.unito.di.sarlexceptions.spaces.ExceptionSpaceSpecification
+import io.sarl.core.Logging
 
 agent Alice {
 
-	uses DefaultContextInteractions, Schedules, Behaviors
+	uses DefaultContextInteractions, Schedules, Behaviors, Logging
 	var comspace : ExceptionSpace
 	
 	
@@ -20,9 +21,9 @@ agent Alice {
 		
 		comspace = defaultContext.getOrCreateSpaceWithSpec(typeof(ExceptionSpaceSpecification),
 			occurrence.parameters.get(0) as UUID)
-		comspace.printMessage("Hello from ALICE")
-		comspace.registerAsThrower(Initialize, MyException, asEventListener)
-		comspace.registerAsThrower(Initialize, MyOtherException, asEventListener)
+		info("Hello from ALICE")
+		comspace.registerAsRaiser(Initialize, MyException, asEventListener)
+		comspace.registerAsRaiser(Initialize, MyOtherException, asEventListener)
 
 		comspace.throwException(new MyOtherException(NullPointerException), getID)
 			

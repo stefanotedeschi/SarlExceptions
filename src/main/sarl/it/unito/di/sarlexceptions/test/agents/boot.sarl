@@ -13,11 +13,6 @@ agent Boot {
 		
 		var spaceId = UUID::randomUUID
 		
-		var input = new Scanner(System.in);
-		System.out.println("Insert the amount: ");
-		var amount = input.next();
-		System.out.println(amount + " inserted!");
-		
 		spawn(Alice, spaceId)
 		spawn(Bob, spaceId)
 		spawn(Carol, spaceId)
