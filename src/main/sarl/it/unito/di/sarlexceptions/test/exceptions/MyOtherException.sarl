@@ -1,4 +1,4 @@
-package it.unito.di.sarlexceptions.test
+package it.unito.di.sarlexceptions.test.exceptions
 
 import io.sarl.core.Failure
 

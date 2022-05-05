@@ -6,10 +6,12 @@ import io.sarl.core.Initialize
 import io.sarl.core.Schedules
 import java.util.UUID
 import it.unito.di.sarlexceptions.spaces.ExceptionSpace
-import it.unito.di.sarlexceptions.test.MyOtherException
-import it.unito.di.sarlexceptions.test.MyException
+import it.unito.di.sarlexceptions.test.exceptions.MyOtherException
+import it.unito.di.sarlexceptions.test.exceptions.MyException
+import it.unito.di.sarlexceptions.test.exceptions.MyUncommonException
 import it.unito.di.sarlexceptions.spaces.ExceptionSpaceSpecification
 import io.sarl.core.Logging
+import it.unito.di.sarlexceptions.events.NoHandlerAvailable
 
 agent Alice {
 
@@ -24,12 +26,19 @@ agent Alice {
 		info("Hello from ALICE")
 		comspace.registerAsRaiser(Initialize, MyException, asEventListener)
 		comspace.registerAsRaiser(Initialize, MyOtherException, asEventListener)
+		comspace.registerAsRaiser(Initialize, MyUncommonException, asEventListener)
 
-		comspace.throwException(new MyOtherException(NullPointerException), getID)
+		comspace.raiseException(new MyOtherException(NullPointerException), getID)
 			
-		every(1000)[
-			comspace.throwException(new MyException(NullPointerException),getID)
-		]
+		comspace.raiseException(new MyException(NullPointerException), getID)
+
+		comspace.raiseException(new MyUncommonException(NullPointerException), getID)
+		
+	}
+	
+	on NoHandlerAvailable {
+		
+		info("Alice: No handler available for exception " + occurrence.ex.simpleName)
 		
 	}
 	

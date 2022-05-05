@@ -1,7 +1,7 @@
 /** 
  * 
  */
-package it.unito.di.sarlexceptions.test.events
+package it.unito.di.sarlexceptions.events
 
 import java.util.UUID
 import io.sarl.lang.core.Event
@@ -11,7 +11,7 @@ import io.sarl.core.Failure
  * @author Stefano
  * 
  */
-event ExceptionThrowerRegistered {
+event ExceptionRaiserRegistered {
 	
 	var ev : Class<? extends Event>
 	var ex : Class<? extends Failure>

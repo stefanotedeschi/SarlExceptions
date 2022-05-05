@@ -12,7 +12,9 @@ import io.sarl.lang.core.Event
 import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
 import it.unito.di.sarlexceptions.ExceptionSpecification
-import it.unito.di.sarlexceptions.test.events.ExceptionThrowerRegistered
+import it.unito.di.sarlexceptions.events.ExceptionRaiserRegistered
+import it.unito.di.sarlexceptions.events.ExceptionHandlerRegistered
+import it.unito.di.sarlexceptions.events.NoHandlerAvailable
 
 class ExceptionSpaceImpl extends OpenLocalEventSpace implements ExceptionSpace  {
 	
@@ -24,7 +26,7 @@ class ExceptionSpaceImpl extends OpenLocalEventSpace implements ExceptionSpace  
 		registerStrongParticipant(listener);
 		var exSpec = new ExceptionSpecification(ev,e,listener.getID)
 		raisers.add(exSpec)
-		emit(this.spaceID.ID, new ExceptionThrowerRegistered(ev, e, listener.ID))
+		emit(this.spaceID.ID, new ExceptionRaiserRegistered(ev, e, listener.ID))
 		// TODO: Aggiungere emit evento per notificare gli altri della registrazione 
 	}
 
@@ -40,15 +42,19 @@ class ExceptionSpaceImpl extends OpenLocalEventSpace implements ExceptionSpace  
 			h.add(listener.getID)
 			handlers.put(e,h)
 		}
+		emit(this.spaceID.ID, new ExceptionHandlerRegistered(e, listener.ID))
 	}
 	
-	def throwException(f : Failure, u : UUID) {
-		logger.info("New exception thrown")
+	def raiseException(f : Failure, u : UUID) {
+		logger.info("New exception raised")
 		if(handlers.containsKey(f.class)){
 			var handlers = handlers.get(f.class)
 			for(handler : handlers) {
 				emit(u,f)[it.getID == handler]
 			}
+		}
+		else {
+			emit(this.spaceID.ID, new NoHandlerAvailable(f.class))[it.getID == u]
 		}
 	}	
 		

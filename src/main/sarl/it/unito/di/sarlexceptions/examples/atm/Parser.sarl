@@ -9,11 +9,8 @@ import io.sarl.core.Logging
 import it.unito.di.sarlexceptions.spaces.ExceptionSpace
 import it.unito.di.sarlexceptions.spaces.ExceptionSpaceSpecification
 
-/** 
- * @author Giova
- * 
- */
 agent Parser {
+	
 	uses DefaultContextInteractions, Behaviors,Logging
 
 	var exSpace : ExceptionSpace
@@ -32,7 +29,7 @@ agent Parser {
 		
 		var amountString = occurrence.amount
 		if (amountString == null) {
-           exSpace.throwException(new NotANumberException(-1),ID)
+           exSpace.raiseException(new NotANumberException(-1),ID)
         }
 
         var result = 0
@@ -50,11 +47,11 @@ agent Parser {
                     negative = true
                     limit = Integer.MIN_VALUE;
 				} else if (firstChar != '+') {
-					exSpace.throwException(new NotANumberException(i), ID)
+					exSpace.raiseException(new NotANumberException(i), ID)
 					return
 				}
                 if (len == 1) { // Cannot have lone "+" or "-"
-					exSpace.throwException(new NotANumberException(i), ID)
+					exSpace.raiseException(new NotANumberException(i), ID)
 					return
 				}
                 i++;
@@ -64,22 +61,22 @@ agent Parser {
                 // Accumulating negatively avoids surprises near MAX_VALUE
                 digit = Character.digit(amountString.charAt(i++), 10);
                 if (digit < 0) {
-					exSpace.throwException(new NotANumberException(i), ID)
+					exSpace.raiseException(new NotANumberException(i), ID)
                 	return
                 }
                 if (result < multmin) {
-					exSpace.throwException(new NotANumberException(i), ID)
+					exSpace.raiseException(new NotANumberException(i), ID)
                 	return
                 }
                 result *= 10;
                 if (result < limit + digit) {
-					exSpace.throwException(new NotANumberException(i), ID)
+					exSpace.raiseException(new NotANumberException(i), ID)
                 	return
                 }
                 result -= digit;
             }
         } else {
-			exSpace.throwException(new NotANumberException(-1), ID)
+			exSpace.raiseException(new NotANumberException(-1), ID)
         	return
         }
         var amountInt = negative ? result : -result;

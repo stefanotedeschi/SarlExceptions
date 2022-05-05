@@ -8,7 +8,7 @@ import io.sarl.lang.core.EventListener
 
 interface ExceptionSpace extends OpenEventSpace {
 
-	def throwException(f : Failure, u : UUID)
+	def raiseException(f : Failure, u : UUID)
 	
 	def registerAsRaiser(ev : Class<? extends Event>, ex : Class<? extends Failure>, listener : EventListener)
 	

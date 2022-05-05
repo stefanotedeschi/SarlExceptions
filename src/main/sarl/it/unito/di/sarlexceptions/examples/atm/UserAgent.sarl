@@ -8,13 +8,9 @@ import java.util.UUID
 import it.unito.di.sarlexceptions.spaces.ExceptionSpace
 import it.unito.di.sarlexceptions.spaces.ExceptionSpaceSpecification
 import java.util.Scanner
-import it.unito.di.sarlexceptions.test.events.ExceptionThrowerRegistered
+import it.unito.di.sarlexceptions.events.ExceptionRaiserRegistered
 import io.sarl.core.Logging
 
-/** 
- * @author Giova
- * 
- */
 agent UserAgent {
 	
 	uses DefaultContextInteractions, Schedules, Behaviors, Logging
@@ -40,7 +36,7 @@ agent UserAgent {
 		
 	}
 
-	on ExceptionThrowerRegistered[occurrence.ev === ParsingRequest && occurrence.ex === NotANumberException] {
+	on ExceptionRaiserRegistered[occurrence.ev === ParsingRequest && occurrence.ex === NotANumberException] {
 		exSpace.registerAsHandler(occurrence.ex, asEventListener)
 		info("Parser found!")
 		wake(new RequestInput)

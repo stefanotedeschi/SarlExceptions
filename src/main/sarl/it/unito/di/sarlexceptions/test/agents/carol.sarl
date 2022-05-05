@@ -5,8 +5,8 @@ import io.sarl.core.DefaultContextInteractions
 import io.sarl.core.Initialize
 import java.util.UUID
 import it.unito.di.sarlexceptions.spaces.ExceptionSpace
-import it.unito.di.sarlexceptions.test.MyOtherException
-import it.unito.di.sarlexceptions.test.MyException
+import it.unito.di.sarlexceptions.test.exceptions.MyOtherException
+import it.unito.di.sarlexceptions.test.exceptions.MyException
 import it.unito.di.sarlexceptions.spaces.ExceptionSpaceSpecification
 import io.sarl.core.Logging
 
@@ -22,16 +22,15 @@ agent Carol {
 			occurrence.parameters.get(0) as UUID)
 		info("Hello from CAROL")
 		comspace.registerAsHandler(MyOtherException, asEventListener)
-		//comspace.registerAsHandler(MyException, asEventListener)
 	
 	}
 
 	on MyException {
-		info("MY EXCEPTION Carol!")
+		info("Carol: MY EXCEPTION received")
 	}
 	
 	on MyOtherException {
-		info("MY OTHER EXCEPTION Carol!")
+		info("Carol: MY OTHER EXCEPTION received")
 	}
 
 }

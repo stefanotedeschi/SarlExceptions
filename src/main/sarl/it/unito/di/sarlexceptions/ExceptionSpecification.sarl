@@ -1,16 +1,9 @@
-/** 
- * 
- */
 package it.unito.di.sarlexceptions
 
 import io.sarl.lang.core.Event
 import io.sarl.core.Failure
 import java.util.UUID
 
-/** 
- * @author Stefano
- * 
- */
 class ExceptionSpecification implements Comparable {
 	
 	var ev : Class<? extends Event>
