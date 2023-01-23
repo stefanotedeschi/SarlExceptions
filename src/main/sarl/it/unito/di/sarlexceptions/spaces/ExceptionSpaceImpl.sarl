@@ -19,6 +19,9 @@ import it.unito.di.sarlexceptions.events.NoHandlerAvailable
 class ExceptionSpaceImpl extends OpenLocalEventSpace implements ExceptionSpace  {
 	
 	var raisers = new ConcurrentSkipListSet<ExceptionSpecification>
+
+	//var raisersMap = new ConcurrentHashMap<Class<? extends Failure>, CopyOnWriteArrayList<UUID>>
+	
 	var handlers = new  ConcurrentHashMap<Class<? extends Failure>, CopyOnWriteArrayList<UUID>>
 	
 	def registerAsRaiser(ev : Class<? extends Event>, e : Class<? extends Failure>, listener : EventListener) : void {
@@ -27,8 +30,21 @@ class ExceptionSpaceImpl extends OpenLocalEventSpace implements ExceptionSpace  
 		var exSpec = new ExceptionSpecification(ev,e,listener.getID)
 		raisers.add(exSpec)
 		emit(this.spaceID.ID, new ExceptionRaiserRegistered(ev, e, listener.ID))
-		// TODO: Aggiungere emit evento per notificare gli altri della registrazione 
 	}
+
+	/*def registerAsRaiser(e : Class<? extends Failure>, listener : EventListener) : void {
+		logger.info("New exception raiser registered")
+		registerStrongParticipant(listener);
+		if (raisersMap.containsKey(e)) {
+			var r = raisersMap.get(e)
+			r.add(listener.getID)
+		} else {
+			var r = new CopyOnWriteArrayList<UUID>
+			r.add(listener.getID)
+			raisersMap.put(e, r)
+		}
+		//emit(this.spaceID.ID, new ExceptionHandlerRegistered(e, listener.ID))
+	}*/
 
 	def registerAsHandler(e : Class<? extends Failure>, listener : EventListener) : void {
 		logger.info("New exception handler registered")

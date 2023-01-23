@@ -1,0 +1,17 @@
+package it.unito.di.sarlexceptions.examples.prescription
+
+import io.sarl.core.Failure
+
+event GetMedication {
+}
+
+event Complain {
+}
+
+event Prescribe {
+}
+
+event ProvideDrugs {
+}
+
+event PrescriptionLost extends Failure { }

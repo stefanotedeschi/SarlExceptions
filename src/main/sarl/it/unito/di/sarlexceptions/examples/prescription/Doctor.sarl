@@ -1,0 +1,42 @@
+
+package it.unito.di.sarlexceptions.examples.prescription
+
+import io.sarl.core.Initialize
+import io.sarl.core.Behaviors
+import io.sarl.core.DefaultContextInteractions
+import io.sarl.core.Logging
+import it.unito.di.sarlexceptions.spaces.ExceptionSpace
+
+agent Doctor {
+	
+	uses DefaultContextInteractions, Behaviors,Logging
+
+	var exSpace : ExceptionSpace
+
+	on Initialize {
+		
+		exSpace = occurrence.parameters.get(0) as ExceptionSpace
+		exSpace.registerStrongParticipant(asEventListener)
+		
+		exSpace.registerAsHandler(PrescriptionLost, asEventListener)
+
+		info("[Doctor] Initialized!")
+		
+	}
+	
+	on Complain {
+		
+		info("[Doctor] New complain received from patient!")
+		
+		emit(new Prescribe)
+
+		info("Prescription sent!")
+		
+	}
+	
+	
+	on PrescriptionLost {
+		info("[Doctor] Prescription lost!")
+	}
+	
+}

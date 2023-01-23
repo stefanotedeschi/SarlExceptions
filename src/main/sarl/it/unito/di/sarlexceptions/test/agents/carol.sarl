@@ -21,16 +21,17 @@ agent Carol {
 		comspace = defaultContext.getOrCreateSpaceWithSpec(typeof(ExceptionSpaceSpecification),
 			occurrence.parameters.get(0) as UUID)
 		info("Hello from CAROL")
+		comspace.registerAsHandler(MyException, asEventListener)
 		comspace.registerAsHandler(MyOtherException, asEventListener)
 	
 	}
 
 	on MyException {
-		info("Carol: MY EXCEPTION received")
+		info("CAROL: MY EXCEPTION received")
 	}
 	
 	on MyOtherException {
-		info("Carol: MY OTHER EXCEPTION received")
+		info("CAROL: MY OTHER EXCEPTION received")
 	}
 
 }

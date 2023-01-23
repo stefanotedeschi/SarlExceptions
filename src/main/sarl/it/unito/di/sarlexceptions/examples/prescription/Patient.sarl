@@ -1,0 +1,52 @@
+
+package it.unito.di.sarlexceptions.examples.prescription
+
+import io.sarl.core.Initialize
+import io.sarl.core.Behaviors
+import io.sarl.core.DefaultContextInteractions
+import io.sarl.core.Logging
+import it.unito.di.sarlexceptions.spaces.ExceptionSpace
+import io.sarl.core.Schedules
+
+agent Patient {
+	
+	uses DefaultContextInteractions, Behaviors,Logging, Schedules
+
+	var exSpace : ExceptionSpace
+	
+	var prescriptionReceived = false
+
+	on Initialize {
+		
+		exSpace = occurrence.parameters.get(0) as ExceptionSpace
+		
+		exSpace.registerAsRaiser(GetMedication, PrescriptionLost, asEventListener)
+
+		emit(new GetMedication)
+		
+		info("[Patient] Initialized!")
+		
+	}
+	
+	on GetMedication {
+
+		emit(new Complain)
+		info("[Patient] New complain sent to doctor!")
+
+		in(5000) [
+			if (!prescriptionReceived) {
+				exSpace.raiseException(new PrescriptionLost("Timeout"), ID)
+			}
+		]
+		
+	}
+	
+	on ProvideDrugs {
+		
+		prescriptionReceived = true
+		
+		info("[Patient] *** THANK YOU ***")
+		
+	}
+
+}

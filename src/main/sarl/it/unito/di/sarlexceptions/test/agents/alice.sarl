@@ -38,7 +38,7 @@ agent Alice {
 	
 	on NoHandlerAvailable {
 		
-		info("Alice: No handler available for exception " + occurrence.ex.simpleName)
+		info("ALICE: No handler available for exception " + occurrence.ex.simpleName)
 		
 	}
 	
