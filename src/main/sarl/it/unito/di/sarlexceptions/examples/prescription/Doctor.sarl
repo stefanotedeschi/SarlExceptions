@@ -6,6 +6,7 @@ import io.sarl.core.Behaviors
 import io.sarl.core.DefaultContextInteractions
 import io.sarl.core.Logging
 import it.unito.di.sarlexceptions.spaces.ExceptionSpace
+import java.util.List
 
 agent Doctor {
 	
@@ -19,6 +20,7 @@ agent Doctor {
 		exSpace.registerStrongParticipant(asEventListener)
 		
 		exSpace.registerAsHandler(PrescriptionLost, asEventListener)
+		exSpace.registerAsRaiser(Complain,SpecialistVisitNeeded, asEventListener)
 
 		info("[Doctor] Initialized!")
 		
@@ -28,10 +30,22 @@ agent Doctor {
 		
 		info("[Doctor] New complain received from patient!")
 		
-		emit(new Prescribe)
-
-		info("Prescription sent!")
+		var symptoms = occurrence.symptoms
 		
+		if(areSevere(symptoms)) {
+			info("[Doctor] Cannot send prescription. A specialist visit is needed")
+			exSpace.raiseException(new SpecialistVisitNeeded("Severe symptoms"), ID)
+		}
+		else {
+			emit(new Prescribe)
+			info("[Doctor] Prescription sent!")	
+		}
+		
+	}
+	
+	private def areSevere(symptoms : List<String>) : boolean {
+		if(symptoms.contains("dyspnea")) return true
+		else return false
 	}
 	
 	

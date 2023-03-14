@@ -1,17 +1,23 @@
 package it.unito.di.sarlexceptions.examples.prescription
 
 import io.sarl.core.Failure
+import java.util.List
 
-event GetMedication {
-}
+event GetMedication { }
 
 event Complain {
+	var symptoms : List<String>
+	new(s : List<String>) {
+		symptoms = s
+	}
 }
 
-event Prescribe {
+event Prescribe { }
+
+event PrescriptionFilled {
 }
 
-event ProvideDrugs {
+event PrescriptionLost extends Failure {
 }
 
-event PrescriptionLost extends Failure { }
+event SpecialistVisitNeeded extends Failure { }
