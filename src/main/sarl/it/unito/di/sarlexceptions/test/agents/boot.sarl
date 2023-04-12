@@ -11,11 +11,9 @@ agent Boot {
 
 	on Initialize {
 		
-		var spaceId = UUID::randomUUID
-		
-		spawn(Alice, spaceId)
-		spawn(Bob, spaceId)
-		spawn(Carol, spaceId)
+		spawn(Alice)
+		spawn(Bob)
+		spawn(Carol)
 		
 		killMe
 	

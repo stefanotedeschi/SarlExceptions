@@ -8,19 +8,19 @@ import java.util.UUID
 import io.sarl.core.Logging
 import it.unito.di.sarlexceptions.spaces.ExceptionSpace
 import it.unito.di.sarlexceptions.spaces.ExceptionSpaceSpecification
+import it.unito.di.sarlexceptions.events.ExceptionSpaceCreated
 
 agent Parser {
 	
 	uses DefaultContextInteractions, Behaviors,Logging
 
-	var exSpace : ExceptionSpace
+	var exSpace : ExceptionSpace<NotANumberException>
 
 	on Initialize {
-		
-		exSpace = defaultContext.getOrCreateSpaceWithSpec(typeof(ExceptionSpaceSpecification),
-			occurrence.parameters.get(0) as UUID)
-			
-		exSpace.registerAsRaiser(ParsingRequest,NotANumberException, asEventListener)
+		val type = new ExceptionSpaceSpecification.class as Class<ExceptionSpaceSpecification<NotANumberException>>
+		exSpace = defaultContext.getOrCreateSpaceWithSpec(type, UUID::randomUUID)
+		exSpace.registerAsRaiser(asEventListener)
+		emit(new ExceptionSpaceCreated(NotANumberException, exSpace.spaceID.ID))
 	}
 
 	on ParsingRequest {

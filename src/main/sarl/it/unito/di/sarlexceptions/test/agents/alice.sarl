@@ -12,28 +12,37 @@ import it.unito.di.sarlexceptions.test.exceptions.MyUncommonException
 import it.unito.di.sarlexceptions.spaces.ExceptionSpaceSpecification
 import io.sarl.core.Logging
 import it.unito.di.sarlexceptions.events.NoHandlerAvailable
+import it.unito.di.sarlexceptions.events.ExceptionSpaceCreated
 
 agent Alice {
 
 	uses DefaultContextInteractions, Schedules, Behaviors, Logging
-	var comspace : ExceptionSpace
-	
 	
 	on Initialize {
-		
-		comspace = defaultContext.getOrCreateSpaceWithSpec(typeof(ExceptionSpaceSpecification),
-			occurrence.parameters.get(0) as UUID)
+
 		info("Hello from ALICE")
-		comspace.registerAsRaiser(Initialize, MyException, asEventListener)
-		comspace.registerAsRaiser(Initialize, MyOtherException, asEventListener)
-		comspace.registerAsRaiser(Initialize, MyUncommonException, asEventListener)
-
-		comspace.raiseException(new MyOtherException(NullPointerException), getID)
-			
-		comspace.raiseException(new MyException(NullPointerException), getID)
-
-		comspace.raiseException(new MyUncommonException(NullPointerException), getID)
 		
+		val type1 = new ExceptionSpaceSpecification.class as Class<ExceptionSpaceSpecification<MyException>>
+		val exSpace1 : ExceptionSpace<MyException> = defaultContext.getOrCreateSpaceWithID(type1, UUID::randomUUID)
+		exSpace1.registerAsRaiser(asEventListener)
+		emit(new ExceptionSpaceCreated(MyException, exSpace1.spaceID.ID))
+		
+
+		val type2 = new ExceptionSpaceSpecification.class as Class<ExceptionSpaceSpecification<MyOtherException>>
+		val exSpace2 : ExceptionSpace<MyOtherException> = defaultContext.getOrCreateSpaceWithID(type2, UUID::randomUUID)
+		exSpace2.registerAsRaiser(asEventListener)
+		emit(new ExceptionSpaceCreated(MyOtherException, exSpace2.spaceID.ID))
+
+		val type3 = new ExceptionSpaceSpecification.class as Class<ExceptionSpaceSpecification<MyUncommonException>>
+		val exSpace3 : ExceptionSpace<MyUncommonException> = defaultContext.getOrCreateSpaceWithID(type3, UUID::randomUUID)
+		exSpace3.registerAsRaiser(asEventListener)
+		emit(new ExceptionSpaceCreated(MyUncommonException, exSpace3.spaceID.ID))
+
+		in(1000) [
+			exSpace1.raiseException(new MyException(NullPointerException), getID)
+			exSpace2.raiseException(new MyOtherException(NullPointerException), getID)
+			exSpace3.raiseException(new MyUncommonException(NullPointerException), getID)
+		]
 	}
 	
 	on NoHandlerAvailable {

@@ -1,115 +1,45 @@
 package it.unito.di.sarlexceptions.spaces
 
-import io.sarl.core.ParticipantJoined
-import io.sarl.core.ParticipantLeft
-import io.sarl.lang.core.Address
 import io.sarl.lang.core.EventListener
 import java.util.UUID
 import io.sarl.sre.spaces.OpenLocalEventSpace
 import io.sarl.core.Failure
-import java.util.concurrent.ConcurrentSkipListSet
-import io.sarl.lang.core.Event
-import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CopyOnWriteArrayList
-import it.unito.di.sarlexceptions.ExceptionSpecification
-import it.unito.di.sarlexceptions.events.ExceptionRaiserRegistered
-import it.unito.di.sarlexceptions.events.ExceptionHandlerRegistered
 import it.unito.di.sarlexceptions.events.NoHandlerAvailable
 
-class ExceptionSpaceImpl extends OpenLocalEventSpace implements ExceptionSpace  {
+class ExceptionSpaceImpl<T extends Failure> extends OpenLocalEventSpace implements ExceptionSpace<T> {
 	
-	var raisers = new ConcurrentSkipListSet<ExceptionSpecification>
+	var raisers = new CopyOnWriteArrayList<UUID>
+	
+	var handlers = new CopyOnWriteArrayList<UUID>
 
-	//var raisersMap = new ConcurrentHashMap<Class<? extends Failure>, CopyOnWriteArrayList<UUID>>
-	
-	var handlers = new  ConcurrentHashMap<Class<? extends Failure>, CopyOnWriteArrayList<UUID>>
-	
-	def registerAsRaiser(ev : Class<? extends Event>, e : Class<? extends Failure>, listener : EventListener) : void {
-		logger.info("New exception raiser registered")
-		registerStrongParticipant(listener);
-		var exSpec = new ExceptionSpecification(ev,e,listener.getID)
-		raisers.add(exSpec)
-		emit(this.spaceID.ID, new ExceptionRaiserRegistered(ev, e, listener.ID))
+	def registerAsRaiser(listener : EventListener) : void {
+		registerStrongParticipant(listener)
+		raisers.add(listener.getID)
+		//emit(this.spaceID.ID, new ExceptionRaiserRegistered(e, listener.ID))
 	}
 
-	/*def registerAsRaiser(e : Class<? extends Failure>, listener : EventListener) : void {
-		logger.info("New exception raiser registered")
-		registerStrongParticipant(listener);
-		if (raisersMap.containsKey(e)) {
-			var r = raisersMap.get(e)
-			r.add(listener.getID)
-		} else {
-			var r = new CopyOnWriteArrayList<UUID>
-			r.add(listener.getID)
-			raisersMap.put(e, r)
-		}
+	def registerAsHandler(listener : EventListener) : void {
+		registerStrongParticipant(listener)
+		handlers.add(listener.getID)
 		//emit(this.spaceID.ID, new ExceptionHandlerRegistered(e, listener.ID))
-	}*/
-
-	def registerAsHandler(e : Class<? extends Failure>, listener : EventListener) : void {
-		logger.info("New exception handler registered")
-		registerStrongParticipant(listener);
-		if (handlers.containsKey(e)) {
-			var h = handlers.get(e)
-			h.add(listener.getID)
-		}
-		else {
-			var h = new CopyOnWriteArrayList<UUID>
-			h.add(listener.getID)
-			handlers.put(e,h)
-		}
-		emit(this.spaceID.ID, new ExceptionHandlerRegistered(e, listener.ID))
 	}
 	
-	def raiseException(f : Failure, u : UUID) {
-		logger.info("New exception raised")
-		if(handlers.containsKey(f.class)){
-			var handlers = handlers.get(f.class)
-			for(handler : handlers) {
-				emit(u,f)[it.getID == handler]
+	def raiseException(e : T, id : UUID) {
+		if(raisers.contains(id)) {
+			if (handlers.isEmpty) {
+				emit(this.spaceID.ID, new NoHandlerAvailable(e.class))[it.getID == id]
+			}
+			else {
+				logger.info("New exception raised: " + e.class.simpleName.toString)
+				for(handler : handlers) {
+					emit(id,e)[it.getID == handler]
+				}
 			}
 		}
 		else {
-			emit(this.spaceID.ID, new NoHandlerAvailable(f.class))[it.getID == u]
+			// TODO: cosa fare se l'eccezione la lancia uno che non e' raiser?
 		}
-	}	
-		
-	def forEachStrongParticipant(callback : (UUID)=>void) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
 	}
-	
-	def forEachWeakParticipant(callback : (UUID)=>void) {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
-	}
-	
-	def getNumberOfStrongParticipants : int {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
-	}
-	
-	def getNumberOfWeakParticipants : int {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
-	}
-	
-	def isPseudoEmpty(id : UUID) : boolean {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
-	}
-	
-	def registerWeakParticipant(arg0 : EventListener) : Address fires ParticipantJoined {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
-	}
-	
-	def unregister(arg0 : EventListener) : Address fires ParticipantLeft {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
-	}
-	
-	def getAddress(id : UUID) : Address {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
-	}
-	
-	def registerStrongParticipant(ex : Exception, el : EventListener) : boolean {
-		throw new UnsupportedOperationException("TODO: auto-generated method stub")
-	}
-	
-
 	
 }

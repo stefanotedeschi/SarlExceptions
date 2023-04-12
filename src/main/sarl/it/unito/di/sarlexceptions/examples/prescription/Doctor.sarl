@@ -1,4 +1,3 @@
-
 package it.unito.di.sarlexceptions.examples.prescription
 
 import io.sarl.core.Initialize
@@ -6,51 +5,38 @@ import io.sarl.core.Behaviors
 import io.sarl.core.DefaultContextInteractions
 import io.sarl.core.Logging
 import it.unito.di.sarlexceptions.spaces.ExceptionSpace
-import java.util.List
+import it.unito.di.sarlexceptions.events.ExceptionSpaceCreated
 
 agent Doctor {
 	
 	uses DefaultContextInteractions, Behaviors,Logging
 
-	var exSpace : ExceptionSpace
+	var exSpacePatient : ExceptionSpace<LostRequest>
+	var exSpacePharmacist : ExceptionSpace<MissingPrescription>
 
 	on Initialize {
-		
-		exSpace = occurrence.parameters.get(0) as ExceptionSpace
-		exSpace.registerStrongParticipant(asEventListener)
-		
-		exSpace.registerAsHandler(PrescriptionLost, asEventListener)
-		exSpace.registerAsRaiser(Complain,SpecialistVisitNeeded, asEventListener)
-
 		info("[Doctor] Initialized!")
-		
 	}
-	
-	on Complain {
-		
-		info("[Doctor] New complain received from patient!")
-		
-		var symptoms = occurrence.symptoms
-		
-		if(areSevere(symptoms)) {
-			info("[Doctor] Cannot send prescription. A specialist visit is needed")
-			exSpace.raiseException(new SpecialistVisitNeeded("Severe symptoms"), ID)
-		}
-		else {
-			emit(new Prescribe)
-			info("[Doctor] Prescription sent!")	
-		}
-		
+
+    on ExceptionSpaceCreated[occurrence.ex == LostRequest] {
+    	exSpacePatient = defaultContext.getSpace(occurrence.id)
+    	exSpacePatient.registerAsHandler(asEventListener)
+		info("[Doctor] Registered as handler for LostRequest!")
+    }
+
+	on ExceptionSpaceCreated [occurrence.ex == MissingPrescription] {
+		exSpacePharmacist = defaultContext.getSpace(occurrence.id)
+		exSpacePharmacist.registerAsHandler(asEventListener)
+		info("[Doctor] Registered as handler for MissingPrescription!")
 	}
-	
-	private def areSevere(symptoms : List<String>) : boolean {
-		if(symptoms.contains("dyspnea")) return true
-		else return false
+
+	on Consult {
+		info("[Doctor] New prescription request received from patient! Sending prescription to pharmacist...")
+		emit(new Prescribe)
 	}
-	
-	
-	on PrescriptionLost {
-		info("[Doctor] Prescription lost!")
+
+	on LostRequest {
+		info("[Doctor] LostRequest!")
 	}
 	
 }

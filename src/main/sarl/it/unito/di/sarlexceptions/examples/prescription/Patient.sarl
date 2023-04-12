@@ -1,4 +1,3 @@
-
 package it.unito.di.sarlexceptions.examples.prescription
 
 import io.sarl.core.Initialize
@@ -7,23 +6,32 @@ import io.sarl.core.DefaultContextInteractions
 import io.sarl.core.Logging
 import it.unito.di.sarlexceptions.spaces.ExceptionSpace
 import io.sarl.core.Schedules
-import java.util.ArrayList
+import java.util.UUID
+import it.unito.di.sarlexceptions.spaces.ExceptionSpaceSpecification
+import it.unito.di.sarlexceptions.events.ExceptionSpaceCreated
 
 agent Patient {
 	
 	uses DefaultContextInteractions, Behaviors,Logging, Schedules
 
-	var exSpace : ExceptionSpace
-	
+	var exSpaceDoctor : ExceptionSpace<LostRequest>
+	var exSpacePharmacist : ExceptionSpace<NoDelivery>
+
 	var prescriptionReceived = false
-	var responseFromDoctor = false
 
 	on Initialize {
 		
-		exSpace = occurrence.parameters.get(0) as ExceptionSpace
+		val tDoctor = new ExceptionSpaceSpecification.class as Class<ExceptionSpaceSpecification<LostRequest>>
+		val tPharmacist = new ExceptionSpaceSpecification.class as Class<ExceptionSpaceSpecification<NoDelivery>>
+
+		exSpaceDoctor = defaultContext.getOrCreateSpaceWithID(tDoctor, UUID::randomUUID)
+		exSpacePharmacist = defaultContext.getOrCreateSpaceWithID(tPharmacist, UUID::randomUUID)
 		
-		exSpace.registerAsRaiser(GetMedication, PrescriptionLost, asEventListener)
-		exSpace.registerAsHandler(SpecialistVisitNeeded, asEventListener)
+		exSpaceDoctor.registerAsRaiser(asEventListener)
+		exSpacePharmacist.registerAsRaiser(asEventListener)
+		
+		emit(new ExceptionSpaceCreated(LostRequest, exSpaceDoctor.spaceID.ID))
+		emit(new ExceptionSpaceCreated(NoDelivery, exSpacePharmacist.spaceID.ID))
 
 		emit(new GetMedication)
 		
@@ -32,37 +40,28 @@ agent Patient {
 	}
 	
 	on GetMedication {
-
-		var symptoms = new ArrayList<String>
-		symptoms.add("fever")
-		symptoms.add("dyspnea")
-		emit(new Complain(symptoms))
 		
-		info("[Patient] New complain sent to doctor!")
+		emit(new Consult)
+		
+		info("[Patient] New prescription request sent to doctor!")
 
 		in(5000) [
-			if (!prescriptionReceived && !responseFromDoctor) {
-				exSpace.raiseException(new PrescriptionLost(5000), ID)
+			if (!prescriptionReceived) {
+				exSpaceDoctor.raiseException(new LostRequest("ciao"),ID)
+				exSpacePharmacist.raiseException(new NoDelivery("ciao"),ID)
+			}
+			else {
+				info("*** THANK YOU ***")
 			}
 		]
 		
 	}
 	
-	on PrescriptionFilled {
-		
+	on FillPrescription {
+		info("[Patient] Medicines received from pharmacist!")
 		prescriptionReceived = true
-		
-		info("[Patient] *** THANK YOU ***")
-		
-	}
-	
-	on SpecialistVisitNeeded {
-		
-		responseFromDoctor = true
-		
-		info("[Patient] I have to book a specialist visit :(")
-		
-		
 	}
 	
 }
+
+event GetMedication { }

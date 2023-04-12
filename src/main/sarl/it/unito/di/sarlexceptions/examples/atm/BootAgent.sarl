@@ -13,10 +13,8 @@ agent BootAgent {
 
 	on Initialize {
 		
-		var spaceId = UUID::randomUUID
-		
-		spawn(UserAgent, spaceId)
-		spawn(Parser, spaceId)
+		spawn(UserAgent)
+		spawn(Parser)
 
 		killMe
 	

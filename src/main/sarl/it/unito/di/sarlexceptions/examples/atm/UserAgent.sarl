@@ -10,18 +10,21 @@ import it.unito.di.sarlexceptions.spaces.ExceptionSpaceSpecification
 import java.util.Scanner
 import it.unito.di.sarlexceptions.events.ExceptionRaiserRegistered
 import io.sarl.core.Logging
+import io.sarl.core.Failure
+import it.unito.di.sarlexceptions.events.ExceptionSpaceCreated
+
+event MyFailure extends Failure {
+	
+}
 
 agent UserAgent {
 	
 	uses DefaultContextInteractions, Schedules, Behaviors, Logging
 	
-	var exSpace : ExceptionSpace
+	var exSpace : ExceptionSpace<NotANumberException>
 	var attempts = 1
 
 	on Initialize {
-		exSpace = defaultContext.getOrCreateSpaceWithSpec(typeof(ExceptionSpaceSpecification),
-			occurrence.parameters.get(0) as UUID)
-		exSpace.registerStrongParticipant(asEventListener)
 		info("Waiting for a suitable parser...")
 	}
 	
@@ -36,8 +39,10 @@ agent UserAgent {
 		
 	}
 
-	on ExceptionRaiserRegistered[occurrence.ev === ParsingRequest && occurrence.ex === NotANumberException] {
-		exSpace.registerAsHandler(occurrence.ex, asEventListener)
+	on ExceptionSpaceCreated [occurrence.ex === NotANumberException] {
+		exSpace = defaultContext.getSpace(occurrence.id)
+		exSpace.registerAsHandler(asEventListener)
+		//exSpace.registerAsHandler(occurrence.ex, asEventListener)
 		info("Parser found!")
 		wake(new RequestInput)
 	}
