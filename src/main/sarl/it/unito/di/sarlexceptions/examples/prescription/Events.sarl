@@ -4,11 +4,19 @@ import io.sarl.core.Failure
 
 event Consult { }
 
-event Prescribe { }
+event Prescribe {
+}
 
-event FillPrescription { }
+event PrescribeFwd {
+}
 
-event LostRequest extends Failure { }
+event FillPrescription {
+}
+
+event FillPrescriptionAgain {
+}
+
+event LostMedicines extends Failure { }
 
 event NoDelivery extends Failure { }
 

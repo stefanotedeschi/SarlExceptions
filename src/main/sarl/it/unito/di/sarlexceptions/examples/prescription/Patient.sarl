@@ -14,24 +14,20 @@ agent Patient {
 	
 	uses DefaultContextInteractions, Behaviors,Logging, Schedules
 
-	var exSpaceDoctor : ExceptionSpace<LostRequest>
-	var exSpacePharmacist : ExceptionSpace<NoDelivery>
+	var exSpace : ExceptionSpace<LostMedicines>
 
 	var prescriptionReceived = false
 
 	on Initialize {
 		
-		val tDoctor = new ExceptionSpaceSpecification.class as Class<ExceptionSpaceSpecification<LostRequest>>
-		val tPharmacist = new ExceptionSpaceSpecification.class as Class<ExceptionSpaceSpecification<NoDelivery>>
+		val type = new ExceptionSpaceSpecification.class as Class<ExceptionSpaceSpecification<LostMedicines>>
+		exSpace = defaultContext.getOrCreateSpaceWithID(type, UUID::randomUUID)
+		
+		exSpace.registerAsRaiser(asEventListener)
 
-		exSpaceDoctor = defaultContext.getOrCreateSpaceWithID(tDoctor, UUID::randomUUID)
-		exSpacePharmacist = defaultContext.getOrCreateSpaceWithID(tPharmacist, UUID::randomUUID)
+		info("[Patient] Registered as raiser for LostMedicines!")
 		
-		exSpaceDoctor.registerAsRaiser(asEventListener)
-		exSpacePharmacist.registerAsRaiser(asEventListener)
-		
-		emit(new ExceptionSpaceCreated(LostRequest, exSpaceDoctor.spaceID.ID))
-		emit(new ExceptionSpaceCreated(NoDelivery, exSpacePharmacist.spaceID.ID))
+		emit(new ExceptionSpaceCreated(LostMedicines, exSpace.spaceID.ID))
 
 		emit(new GetMedication)
 		
@@ -47,11 +43,7 @@ agent Patient {
 
 		in(5000) [
 			if (!prescriptionReceived) {
-				exSpaceDoctor.raiseException(new LostRequest("ciao"),ID)
-				exSpacePharmacist.raiseException(new NoDelivery("ciao"),ID)
-			}
-			else {
-				info("*** THANK YOU ***")
+				exSpace.raiseException(new LostMedicines(null),ID)
 			}
 		]
 		
@@ -60,8 +52,22 @@ agent Patient {
 	on FillPrescription {
 		info("[Patient] Medicines received from pharmacist!")
 		prescriptionReceived = true
+		emit(new FollowTherapy)
 	}
+
+	on FillPrescriptionAgain {
+		info("[Patient] Medicines received from pharmacist!")
+		emit(new FollowTherapy)
+	}
+	
+	on FollowTherapy {
+		info("[Patient] *** THANK YOU ***")
+	}
+	
+	
 	
 }
 
 event GetMedication { }
+
+event FollowTherapy { }

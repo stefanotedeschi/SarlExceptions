@@ -13,33 +13,49 @@ agent Pharmacist {
 	
 	uses DefaultContextInteractions, Behaviors,Logging
 
-	var exSpacePatient : ExceptionSpace<NoDelivery>
+	var exSpacePatient : ExceptionSpace<LostMedicines>
 	var exSpaceDoctor : ExceptionSpace<MissingPrescription>
+	var prescriptionReceivedFromDoctor = false
+	var medicinesSent = false
 
 	on Initialize {
+		val type = new ExceptionSpaceSpecification.class as Class<ExceptionSpaceSpecification<MissingPrescription>>
+		exSpaceDoctor = defaultContext.getOrCreateSpaceWithID(type, UUID::randomUUID)
+		exSpaceDoctor.registerAsRaiser(asEventListener)
+		info("[Pharmacist] Registered as raiser for MissingPrescription!")
+		emit(new ExceptionSpaceCreated(MissingPrescription, exSpaceDoctor.spaceID.ID))
 		info("[Pharmacist] Initialized!")
 	}
 
-	on ExceptionSpaceCreated [occurrence.ex == NoDelivery] {
-		
+	on ExceptionSpaceCreated [occurrence.ex == LostMedicines] {
 		exSpacePatient = defaultContext.getSpace(occurrence.id)
 		exSpacePatient.registerAsHandler(asEventListener)
-		info("[Pharmacist] Registered as handler for NoDelivery!")
-
-		val tDoctor = new ExceptionSpaceSpecification.class as Class<ExceptionSpaceSpecification<MissingPrescription>>
-		exSpaceDoctor = defaultContext.getOrCreateSpaceWithID(tDoctor, UUID::randomUUID)
-		exSpaceDoctor.registerAsRaiser(asEventListener)
-		emit(new ExceptionSpaceCreated(MissingPrescription, exSpaceDoctor.spaceID.ID))
-		
+		info("[Pharmacist] Registered as handler for LostMedicines!")
     }
     
     on Prescribe {
 		info("[Pharmacist] New prescription received from doctor! Sending medicines to patient...")
+		prescriptionReceivedFromDoctor = true
 		emit(new FillPrescription)
+		medicinesSent = true
     }
 	
-	on NoDelivery {
-		info("[Pharmacist] NoDelivery!")
+	on LostMedicines {
+		info("[Pharmacist] Handling exception LostMedicines!")
+		if(medicinesSent) {
+			emit(new FillPrescriptionAgain)
+		}
+		if (!prescriptionReceivedFromDoctor) {
+			info("[Pharmacist] Raising exception Missing Prescription!")
+			exSpaceDoctor.raiseException(new MissingPrescription(null),ID)
+		}
+	}
+	
+	on PrescribeFwd {
+		info("[Pharmacist] New prescription received from doctor! Sending medicines to patient...")
+		prescriptionReceivedFromDoctor = true
+		emit(new FillPrescription)
+		medicinesSent = true
 	}
 	
 }

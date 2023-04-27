@@ -11,17 +11,17 @@ agent Doctor {
 	
 	uses DefaultContextInteractions, Behaviors,Logging
 
-	var exSpacePatient : ExceptionSpace<LostRequest>
+	var exSpacePatient : ExceptionSpace<LostMedicines>
 	var exSpacePharmacist : ExceptionSpace<MissingPrescription>
 
 	on Initialize {
 		info("[Doctor] Initialized!")
 	}
 
-    on ExceptionSpaceCreated[occurrence.ex == LostRequest] {
+    on ExceptionSpaceCreated[occurrence.ex == LostMedicines] {
     	exSpacePatient = defaultContext.getSpace(occurrence.id)
     	exSpacePatient.registerAsHandler(asEventListener)
-		info("[Doctor] Registered as handler for LostRequest!")
+		info("[Doctor] Registered as handler for LostMedicines!")
     }
 
 	on ExceptionSpaceCreated [occurrence.ex == MissingPrescription] {
@@ -32,11 +32,16 @@ agent Doctor {
 
 	on Consult {
 		info("[Doctor] New prescription request received from patient! Sending prescription to pharmacist...")
-		emit(new Prescribe)
+		//emit(new Prescribe)
 	}
 
-	on LostRequest {
-		info("[Doctor] LostRequest!")
+	on LostMedicines {
+		info("[Doctor] Handling exception LostMedicines!")
+	}
+
+	on MissingPrescription {
+		info("[Doctor] Handling exception MissingPrescription!")
+		emit(new PrescribeFwd)
 	}
 	
 }
