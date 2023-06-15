@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<groupId>io.sarl.examples.projects</groupId>
-	<artifactId>io-sarl-tutorials-pingpongspace</artifactId>
+	<artifactId>it-unito-si-sarlexceptions-examples-prescription</artifactId>
 	<version>0.12.0</version>
 
 	<properties>
