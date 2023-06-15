@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	
 	<groupId>io.sarl.examples.projects</groupId>
-	<artifactId>it-unito-si-sarlexceptions-examples-prescription</artifactId>
+	<artifactId>it-unito-di-sarlexceptions-examples-prescription</artifactId>
 	<version>0.12.0</version>
 
 	<properties>
