@@ -1,11 +1,11 @@
 package it.unito.di.sarlexceptions.spaces
 
+import io.sarl.api.core.Failure
 import io.sarl.lang.core.EventListener
-import java.util.UUID
-import io.sarl.sre.spaces.OpenLocalEventSpace
-import io.sarl.core.Failure
-import java.util.concurrent.CopyOnWriteArrayList
+import io.sarl.sre.janus.spaces.OpenLocalEventSpace
 import it.unito.di.sarlexceptions.events.NoHandlerAvailable
+import java.util.UUID
+import java.util.concurrent.CopyOnWriteArrayList
 
 class ExceptionSpaceImpl<T extends Failure> extends OpenLocalEventSpace implements ExceptionSpace<T> {
 	

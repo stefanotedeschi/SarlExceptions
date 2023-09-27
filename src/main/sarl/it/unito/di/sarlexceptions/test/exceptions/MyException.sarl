@@ -1,6 +1,6 @@
 package it.unito.di.sarlexceptions.test.exceptions
 
-import io.sarl.core.Failure
+import io.sarl.api.core.Failure
 
 event MyException extends Failure {
 	

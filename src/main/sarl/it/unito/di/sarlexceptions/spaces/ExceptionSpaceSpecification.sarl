@@ -1,15 +1,15 @@
 package it.unito.di.sarlexceptions.spaces;
 
-import io.sarl.lang.core.SpaceSpecification
+import io.bootique.di.Injector
+import io.sarl.api.core.Failure
+import io.sarl.api.core.OpenEventSpace
 import io.sarl.lang.core.SpaceID
-import com.google.inject.Injector
-import io.sarl.core.OpenEventSpace
-import io.sarl.sre.services.logging.LoggingService
-import io.sarl.sre.spaces.SpaceParticipantListenerFactory
-import com.google.inject.Inject
-import io.sarl.sre.KernelScope
-import com.google.inject.name.Named
-import io.sarl.core.Failure
+import io.sarl.lang.core.SpaceSpecification
+import io.sarl.sre.janus.KernelScope
+import io.sarl.sre.janus.services.logging.LoggingService
+import io.sarl.sre.janus.spaces.SpaceParticipantListenerFactory
+import javax.inject.Inject
+import javax.inject.Named
 
 class ExceptionSpaceSpecification<T extends Failure> implements SpaceSpecification<ExceptionSpace<T>> {
 	

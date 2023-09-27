@@ -1,17 +1,14 @@
 package it.unito.di.sarlexceptions.examples.atm
 
-import io.sarl.core.Initialize
-import io.sarl.core.Schedules
-import io.sarl.core.DefaultContextInteractions
-import io.sarl.core.Behaviors
-import java.util.UUID
-import it.unito.di.sarlexceptions.spaces.ExceptionSpace
-import it.unito.di.sarlexceptions.spaces.ExceptionSpaceSpecification
-import java.util.Scanner
-import it.unito.di.sarlexceptions.events.ExceptionRaiserRegistered
-import io.sarl.core.Logging
-import io.sarl.core.Failure
+import io.sarl.api.core.Behaviors
+import io.sarl.api.core.DefaultContextInteractions
+import io.sarl.api.core.Failure
+import io.sarl.api.core.Initialize
+import io.sarl.api.core.Logging
+import io.sarl.api.core.Schedules
 import it.unito.di.sarlexceptions.events.ExceptionSpaceCreated
+import it.unito.di.sarlexceptions.spaces.ExceptionSpace
+import java.util.Scanner
 
 event MyFailure extends Failure {
 	

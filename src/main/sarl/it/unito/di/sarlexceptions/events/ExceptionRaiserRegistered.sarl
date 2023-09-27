@@ -3,10 +3,9 @@
  */
 package it.unito.di.sarlexceptions.events
 
-import java.util.UUID
+import io.sarl.api.core.Failure
 import io.sarl.lang.core.Event
-import io.sarl.core.Failure
-
+import java.util.UUID
 
 event ExceptionRaiserRegistered {
 	

@@ -1,9 +1,7 @@
 package it.unito.di.sarlexceptions.test.agents
 
-import io.sarl.core.Initialize
-import io.sarl.core.Lifecycle
-import java.util.UUID
-import java.util.Scanner
+import io.sarl.api.core.Initialize
+import io.sarl.api.core.Lifecycle
 
 agent Boot {
 

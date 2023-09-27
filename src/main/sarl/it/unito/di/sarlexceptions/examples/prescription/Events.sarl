@@ -1,6 +1,6 @@
 package it.unito.di.sarlexceptions.examples.prescription
 
-import io.sarl.core.Failure
+import io.sarl.api.core.Failure
 
 event Consult { }
 

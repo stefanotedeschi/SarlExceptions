@@ -1,8 +1,7 @@
 package it.unito.di.sarlexceptions.examples.atm
 
-import io.sarl.core.Initialize
-import io.sarl.core.Lifecycle
-import java.util.UUID
+import io.sarl.api.core.Initialize
+import io.sarl.api.core.Lifecycle
 
 /** 
  * @author Giova

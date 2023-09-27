@@ -3,8 +3,7 @@
  */
 package it.unito.di.sarlexceptions.events
 
-import java.util.UUID
-import io.sarl.core.Failure
+import io.sarl.api.core.Failure
 
 /** 
  * @author Stefano
